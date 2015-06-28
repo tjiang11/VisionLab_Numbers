@@ -1,6 +1,6 @@
 package view;
 
-import model.AlphaPairGenerator;
+import model.NumberPairGenerator;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -150,12 +150,12 @@ public final class SetUp {
      * @param view The graphical user interface.
      */
     public static void initialButtonSetUp(GameGUI view) {
-        AlphaPairGenerator apg = new AlphaPairGenerator();
-        char letterOne, letterTwo;
+        NumberPairGenerator apg = new NumberPairGenerator();
+        int letterOne, letterTwo;
         
-        view.setCurrentAlphaPair(apg.getAlphaPair());
-        letterOne = view.getCurrentAlphaPair().getLetterOne();
-        letterTwo = view.getCurrentAlphaPair().getLetterTwo();
+        view.setCurrentNumberPair(apg.getNumberPair());
+        letterOne = view.getCurrentNumberPair().getNumberOne();
+        letterTwo = view.getCurrentNumberPair().getNumberTwo();
         
         view.getLeftOption().setText(String.valueOf(letterOne));
         view.getRightOption().setText(String.valueOf(letterTwo));

@@ -1,7 +1,7 @@
 package view;
 
 import controller.LetterGameController;
-import model.AlphaPair;
+import model.NumberPair;
 import model.Player;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -29,7 +29,7 @@ public class GameGUI {
     /** The subject. */
     private Player currentPlayer;
     /** The current AlphaPair being evaluated by the subject. */
-    private AlphaPair currentAlphaPair;
+    private NumberPair currentNumberPair;
 
     /** The JavaFX stage for the game. */
     private Stage primaryStage;
@@ -134,12 +134,12 @@ public class GameGUI {
         return this.currentPlayer;
     }
     
-    public AlphaPair getCurrentAlphaPair() {
-        return this.currentAlphaPair;
+    public NumberPair getCurrentNumberPair() {
+        return this.currentNumberPair;
     }
     
-    public void setCurrentAlphaPair(AlphaPair ap) {
-        this.currentAlphaPair = ap;
+    public void setCurrentNumberPair(NumberPair np) {
+        this.currentNumberPair = np;
     }
     
     public Scene getScene() {

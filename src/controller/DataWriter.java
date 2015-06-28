@@ -131,10 +131,10 @@ public class DataWriter {
                         this.view.getCurrentPlayer().getSubjectID());
         String leftChoice = 
                 String.valueOf(
-                        this.view.getCurrentAlphaPair().getLetterOne());
+                        this.view.getCurrentNumberPair().getNumberOne());
         String rightChoice = 
                 String.valueOf(
-                        this.view.getCurrentAlphaPair().getLetterTwo());
+                        this.view.getCurrentNumberPair().getNumberTwo());
         String whichSideCorrect;
         String whichSidePicked;
         String correct;
@@ -143,7 +143,7 @@ public class DataWriter {
         String dateTime;
         String consecutiveRounds;
         
-        if (this.view.getCurrentAlphaPair().isLeftCorrect()) {
+        if (this.view.getCurrentNumberPair().isLeftCorrect()) {
             whichSideCorrect = "left";
         } else {
             whichSideCorrect = "right";
@@ -164,7 +164,7 @@ public class DataWriter {
         difficulty = 
             Integer.toString(
                 Math.abs(
-                    this.view.getCurrentAlphaPair().getDifference()));
+                    this.view.getCurrentNumberPair().getDifference()));
         
         /** Convert from nanoseconds to seconds */
         responseTime = String.valueOf(this.player.getRT() / 1000000000.0);

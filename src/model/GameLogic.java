@@ -26,10 +26,10 @@ public final class GameLogic {
      * @return True if the player is correct. False otherwise.
      */
     public static boolean checkValidity(
-            KeyEvent e, AlphaPair ap, Player currentPlayer) {
+            KeyEvent e, NumberPair np, Player currentPlayer) {
         boolean correct;
-        if ((ap.isLeftCorrect() && e.getCode() == KeyCode.F)
-                || !ap.isLeftCorrect() && e.getCode() == KeyCode.J) {
+        if ((np.isLeftCorrect() && e.getCode() == KeyCode.F)
+                || !np.isLeftCorrect() && e.getCode() == KeyCode.J) {
             currentPlayer.addPoint();
             currentPlayer.setRight(true);
             System.out.println("Right!");

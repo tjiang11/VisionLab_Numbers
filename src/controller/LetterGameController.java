@@ -2,7 +2,7 @@ package controller;
 
 import java.net.URL;
 
-import model.AlphaPairGenerator;
+import model.NumberPairGenerator;
 import model.GameLogic;
 import model.Player;
 import javafx.concurrent.Task;
@@ -28,7 +28,7 @@ public class LetterGameController implements GameController {
     private DataWriter dw;
     
     /** AlphaPairGenerator to generate an AlphaPair */
-    private AlphaPairGenerator apg;
+    private NumberPairGenerator npg;
     /** The graphical user interface. */
     private GameGUI theView;
     /** The current scene. */
@@ -54,7 +54,7 @@ public class LetterGameController implements GameController {
     public LetterGameController(GameGUI view) {
         
         gc = this;
-        setApg(new AlphaPairGenerator());
+        setNpg(new NumberPairGenerator());
         theView = view;
         theScene = view.getScene();
         thePlayer = view.getCurrentPlayer();
@@ -85,7 +85,7 @@ public class LetterGameController implements GameController {
                     AudioClip feedbackSound;
                     
                     if (GameLogic.checkValidity(event, 
-                            theView.getCurrentAlphaPair(), 
+                            theView.getCurrentNumberPair(), 
                             theView.getCurrentPlayer())) {
                         feedbackSoundFileUrl = 
                                 getClass().getResource("/UI/sounds/Ping.aiff");
@@ -160,16 +160,16 @@ public class LetterGameController implements GameController {
      * Set the next round's choices.
      */
     public void setOptions() {
-        char letterOne, letterTwo;
+        int numberOne, numberTwo;
         
-        apg.getNewPair();
-        theView.setCurrentAlphaPair(getApg().getAlphaPair());
+        npg.getNewPair();
+        theView.setCurrentNumberPair(getNpg().getNumberPair());
         
-        letterOne = theView.getCurrentAlphaPair().getLetterOne();
-        letterTwo = theView.getCurrentAlphaPair().getLetterTwo();
+        numberOne = theView.getCurrentNumberPair().getNumberOne();
+        numberTwo = theView.getCurrentNumberPair().getNumberTwo();
         
-        theView.getLeftOption().setText(String.valueOf(letterOne));
-        theView.getRightOption().setText(String.valueOf(letterTwo));
+        theView.getLeftOption().setText(String.valueOf(numberOne));
+        theView.getRightOption().setText(String.valueOf(numberTwo));
 
     }
     
@@ -193,12 +193,12 @@ public class LetterGameController implements GameController {
         this.dw = new DataWriter(theView);
     }
 
-    public AlphaPairGenerator getApg() {
-        return apg;
+    public NumberPairGenerator getNpg() {
+        return npg;
     }
 
-    public void setApg(AlphaPairGenerator apg) {
-        this.apg = apg;
+    public void setNpg(NumberPairGenerator npg) {
+        this.npg = npg;
     }
     
     public GameGUI getTheView() {
