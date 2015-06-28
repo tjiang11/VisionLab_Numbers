@@ -51,9 +51,9 @@ public final class SetUp {
      * Game Screen Element Positions and Sizes.
      *
      * Positions of the choices the subject can pick. */
-    static final int LEFT_OPTION_X = 30;
+    static final int LEFT_OPTION_X = 15;
     static final int LEFT_OPTION_Y = 90;
-    static final int RIGHT_OPTION_X = 270;
+    static final int RIGHT_OPTION_X = 255;
     static final int RIGHT_OPTION_Y = 90;
     /** Font size of the letter options. */
     static final int LETTER_SIZE = 100;

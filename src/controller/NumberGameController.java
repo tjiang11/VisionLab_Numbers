@@ -22,7 +22,7 @@ import view.GameGUI;
  * 6-25-2015
  * 
  */
-public class LetterGameController implements GameController {
+public class NumberGameController implements GameController {
     
     /** DataWriter to export data to CSV. */
     private DataWriter dw;
@@ -42,7 +42,7 @@ public class LetterGameController implements GameController {
     /** Current state of the game. */
     public static CurrentState state;
     
-    private LetterGameController gc;
+    private NumberGameController gc;
     
     /** 
      * Constructor for the controller. There is only meant
@@ -51,14 +51,13 @@ public class LetterGameController implements GameController {
      * prepare the next round and record the data.
      * @param view The graphical user interface.
      */
-    public LetterGameController(GameGUI view) {
+    public NumberGameController(GameGUI view) {
         
         gc = this;
         setNpg(new NumberPairGenerator());
         theView = view;
         theScene = view.getScene();
         thePlayer = view.getCurrentPlayer();
-        responseTimeMetric = System.nanoTime();
         state = CurrentState.WAITING_FOR_RESPONSE;
         this.dw = new DataWriter(theView);
     }
@@ -68,6 +67,7 @@ public class LetterGameController implements GameController {
      * during a round. 
      */
     public void setGameHandlers() {
+        responseTimeMetric = System.nanoTime();
         theScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {

@@ -1,6 +1,6 @@
 package view;
 
-import controller.LetterGameController;
+import controller.NumberGameController;
 import model.NumberPair;
 import model.Player;
 import javafx.scene.Scene;
@@ -24,7 +24,7 @@ public class GameGUI {
     static final int SCREEN_HEIGHT = 400;
     
     /** Controller for setting event handlers */
-    private LetterGameController LGC;
+    private NumberGameController NGC;
     
     /** The subject. */
     private Player currentPlayer;
@@ -87,7 +87,7 @@ public class GameGUI {
         this.primaryStage.setFullScreen(false);
         this.primaryStage.sizeToScene();
         this.scene = loginScene;
-        LGC = new LetterGameController(this);
+        NGC = new NumberGameController(this);
         this.primaryStage.setScene(this.scene);
         
         this.primaryStage.show();
@@ -109,8 +109,8 @@ public class GameGUI {
             this.primaryStage.setScene(this.scene);
            
             /** Set event handlers for gameplay */
-            this.LGC.grabSetting(this);
-            this.LGC.setGameHandlers();
+            this.NGC.grabSetting(this);
+            this.NGC.setGameHandlers();
             
         } catch (NumberFormatException e) {
             System.out.println("Oops!");
