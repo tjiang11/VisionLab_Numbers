@@ -52,9 +52,10 @@ public class NumberPair {
         }
         
         //SIZE VARIATION
-        
         this.numberSizeOne = 100 * (randomGenerator.nextInt(3) + 1);
         this.numberSizeTwo = 100 * (randomGenerator.nextInt(3) + 1);
+
+
     }
     
 

@@ -82,7 +82,7 @@ public final class SetUp {
     static final int STAR_SHIFT = 35;
     static final double STAR_SCALE = .28;
     /** Font size of the letter options. */
-    static final int INITIAL_LETTER_SIZE = 300;
+    static final int INITIAL_LETTER_SIZE = 200;
     
     /**
      * Finish Screen Element Positions.
