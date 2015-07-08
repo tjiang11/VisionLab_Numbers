@@ -1,5 +1,6 @@
 package main;
 
+import controller.NumberGameController;
 import view.GameGUI;
 import javafx.application.Application;
 import javafx.stage.Stage;

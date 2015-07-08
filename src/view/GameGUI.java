@@ -1,40 +1,49 @@
 package view;
 
 import controller.NumberGameController;
-import model.NumberPair;
-import model.Player;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /**
  * The graphical user interface of the game.
  * 
+ * Classes Related to:
+ *  -SetUp.java (utility/support)
+ *      -SetUp is a utility class that contains functions that support the setup of GameGUI.
+ *  -NumberGameController.java
+ *      -The controller is created in this class. As the game progresses, the controller 
+ *      adopts to the scenes of the GameGUI and sets their event handlers appropriately.
+ *  
  * @author Tony Jiang
  * 6-25-2015
  * 
  */
 public class GameGUI {
     
+    /** Whether or not to slowly drain the progress bar as time pressure. */
+    static final boolean PROGRESS_DRAIN = false;
+
+    
     /** Width of the game window. */
-    static final int SCREEN_WIDTH = 500;
+    static final int SCREEN_WIDTH = 800;
     /** Height of the game window. */
-    static final int SCREEN_HEIGHT = 400;
+    static final int SCREEN_HEIGHT = 600;
     
     /** Controller for setting event handlers */
     private NumberGameController NGC;
-    
-    /** The subject. */
-    private Player currentPlayer;
-    /** The current AlphaPair being evaluated by the subject. */
-    private NumberPair currentNumberPair;
 
     /** The JavaFX stage for the game. */
     private Stage primaryStage;
     /** The current scene of the game. */
     private Scene scene;
+    /** The pane of the game */
+    private AnchorPane layout;
     
     /** Login Screen - start button. */
     private Button start;
@@ -46,9 +55,17 @@ public class GameGUI {
     private TextField enterId;
     
     /** Game Screen - The left choice. */
-    private Button leftOption;
+    private Label leftOption;
     /** Game Screen - The right choice. */
-    private Button rightOption;
+    private Label rightOption;
+    /** Game Screen - Progress Bar. */
+    private ProgressBar progressBar;
+    /** Game Screen - Get Ready */
+    private Label getReady;
+    /** Game Screen - Get Ready Bar */
+    private ProgressBar getReadyBar;
+    /** Game Screen - Stars */
+    private ImageView starNodes[];
     
     /** End Screen - message informing the user has finished. */
     private Label congratulations;
@@ -74,24 +91,20 @@ public class GameGUI {
     private void setLoginScreen(Stage stage) {
         this.primaryStage.setTitle("Game");
         this.enterId = new TextField();
+        
         Scene loginScene = SetUp.setUpLoginScreen(this, this.primaryStage);
+        this.scene = loginScene;
         
-        this.start.setOnAction(
-                e -> this.setGameScreen(stage, this.enterId.getText()));
-        
-        
-        
+        NGC = new NumberGameController(this);
+        NGC.setLoginHandlers();
+
         this.enterId.requestFocus();
         
         this.primaryStage.setResizable(false);
         this.primaryStage.setFullScreen(false);
         this.primaryStage.sizeToScene();
-        this.scene = loginScene;
-        NGC = new NumberGameController(this);
         this.primaryStage.setScene(this.scene);
-        
-        this.primaryStage.show();
-        
+        this.primaryStage.show();  
     }
     
     /**
@@ -99,17 +112,20 @@ public class GameGUI {
      * @param stage The user interface stage.
      * @param subjectID The subject's ID number.
      */
-    private void setGameScreen(Stage stage, String subjectID) {
-        this.currentPlayer = new Player();
+    public void setGameScreen(Stage stage, String subjectID, NumberGameController lgc) {
         try {
             Scene gameScene = SetUp.setUpGameScreen(
-                    this, stage, subjectID);  
+                    this, stage, subjectID, lgc);  
             
             this.scene = gameScene;
             this.primaryStage.setScene(this.scene);
            
+            
+            this.NGC.prepareFirstRound();
+            
             /** Set event handlers for gameplay */
-            this.NGC.grabSetting(this);
+            
+            if (PROGRESS_DRAIN) { this.NGC.beginProgressBarDrainage(); }
             this.NGC.setGameHandlers();
             
         } catch (NumberFormatException e) {
@@ -124,22 +140,18 @@ public class GameGUI {
      * Sets the ending screen informing the subject of their completion.
      * @param stage The user interface stage.
      */
-    public void setFinishScreen(Stage stage) {
-        Scene finishScene = SetUp.setUpFinishScreen(this, stage);
+    public void setFinishScreen(Stage stage, NumberGameController lgc) {
+        Scene finishScene = SetUp.setUpFinishScreen(this, stage, lgc);
         this.scene = finishScene;
         this.primaryStage.setScene(this.scene);
     }
-
-    public Player getCurrentPlayer() {
-        return this.currentPlayer;
-    }
     
-    public NumberPair getCurrentNumberPair() {
-        return this.currentNumberPair;
-    }
-    
-    public void setCurrentNumberPair(NumberPair np) {
-        this.currentNumberPair = np;
+    /**
+     * Change the background in real time.
+     */
+    public void changeBackground(int level) { 
+        SetUp.setBackground(this.layout, level);
+        this.scene.setRoot(this.layout);
     }
     
     public Scene getScene() {
@@ -150,19 +162,19 @@ public class GameGUI {
         this.scene = s;
     }
     
-    public Button getLeftOption() {
+    public Label getLeftOption() {
         return this.leftOption;
     }
     
-    public void setLeftOption(Button b) {
-        this.leftOption = b;
+    public void setLeftOption(Label label) {
+        this.leftOption = label;
     }
     
-    public void setRightOption(Button b) {
-        this.rightOption = b;
+    public void setRightOption(Label l) {
+        this.rightOption = l;
     }
     
-    public Button getRightOption() {
+    public Label getRightOption() {
         return this.rightOption;
     }
 
@@ -204,6 +216,46 @@ public class GameGUI {
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
+    }
+
+    public ProgressBar getProgressBar() {
+        return progressBar;
+    }
+
+    public void setProgressBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
+    }
+
+    public Label getGetReady() {
+        return getReady;
+    }
+
+    public void setGetReady(Label getReady) {
+        this.getReady = getReady;
+    }
+
+    public ProgressBar getGetReadyBar() {
+        return getReadyBar;
+    }
+
+    public void setGetReadyBar(ProgressBar getReadyBar) {
+        this.getReadyBar = getReadyBar;
+    }
+
+    public AnchorPane getLayout() {
+        return layout;
+    }
+
+    public void setLayout(AnchorPane layout) {
+        this.layout = layout;
+    }
+
+    public ImageView[] getStarNodes() {
+        return starNodes;
+    }
+
+    public void setStarNodes(ImageView starNodes[]) {
+        this.starNodes = starNodes;
     }
 
 }

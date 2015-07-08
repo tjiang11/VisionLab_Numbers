@@ -12,8 +12,9 @@ public interface GameController {
     
     /** Number of rounds. One round is one pair of options. */
     public static final int NUM_ROUNDS = 40;
-    /** Time between rounds in milliseconds. */
-    public static final int TIME_BETWEEN_ROUNDS = 1000;
+
+    /** Number of rounds for each difficulty setting. */
+    public static final int ROUNDS_PER_DIFFICULTY = NUM_ROUNDS / 3;
     
     /**
      * Prepares the next round be recording reponse time,
@@ -29,7 +30,7 @@ public interface GameController {
     /**
      * Wait for a certain time and then set the next round.
      */
-    void waitBeforeNextRoundAndUpdate();
+    void waitBeforeNextRoundAndUpdate(int waitTime);
     
     /**
      * Set the next round's choices.

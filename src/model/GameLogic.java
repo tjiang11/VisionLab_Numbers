@@ -13,33 +13,19 @@ import javafx.scene.input.KeyEvent;
 public final class GameLogic {
     
     /**
-     * Disable the constructing of a GameLogic object.
-     */
-    private GameLogic() {
-    }
-    
-    /**
-     * Checks whether the subject input the correct choice.
+     * Checks whether subject's answer is correct or incorrect.
      * @param e The key event to check which key the user pressed.
-     * @param ap The current AlphaPair being evaluated.
-     * @param currentPlayer The subject.
-     * @return True if the player is correct. False otherwise.
+     * @param ap The current NumberPair being evaluated.
+     * @return correct True if correct, false otherwise.
      */
-    public static boolean checkValidity(
-            KeyEvent e, NumberPair np, Player currentPlayer) {
+    public static boolean checkAnswerCorrect(KeyEvent e, NumberPair ap) {
         boolean correct;
-        if ((np.isLeftCorrect() && e.getCode() == KeyCode.F)
-                || !np.isLeftCorrect() && e.getCode() == KeyCode.J) {
-            currentPlayer.addPoint();
-            currentPlayer.setRight(true);
-            System.out.println("Right!");
+        if ((ap.isLeftCorrect() && e.getCode() == KeyCode.F)
+                || !ap.isLeftCorrect() && e.getCode() == KeyCode.J) {
             correct = true;
-        } else {
-            currentPlayer.setRight(false);
-            System.out.println("Wrong :(");
-            correct = false;
+        } else {  
+            correct = false;     
         } 
-        currentPlayer.incrementNumRounds();    
         return correct;
     }
 }
