@@ -320,15 +320,6 @@ public class NumberGameController implements GameController {
         theView.setFinishScreen(theView.getPrimaryStage(), gameController);
     }
     
-//    /**
-//     * Increase the difficulty if the number of rounds has reached an integer multiple of ROUNDS_PER_DIFFICULTY.
-//     */
-//    private void setDifficulty() {
-//        if (this.thePlayer.getNumRounds() == (ROUNDS_PER_DIFFICULTY * (this.apg.getDifficultyMode() + 1))) {
-//            this.apg.increaseDifficulty();
-//        }
-//    }
-
     /**
      * Clears the options.
      */
@@ -358,7 +349,6 @@ public class NumberGameController implements GameController {
                 setOptions();
                 state = CurrentState.WAITING_FOR_RESPONSE;
                 responseTimeMetric = System.nanoTime();
-                getTheView().getGetReady().setText("");
             }
         });
         new Thread(sleeper).start();
@@ -368,26 +358,24 @@ public class NumberGameController implements GameController {
      * Set the next round's choices.
      */
     public void setOptions() {
-        int letterOne, letterTwo;
+        int numberOne, numberTwo;
         
         apg.getNewDifficultyPair();
         this.currentNumberPair = apg.getNumberPair();
         
-        letterOne = this.currentNumberPair.getNumberOne();
-        letterTwo = this.currentNumberPair.getNumberTwo();
-        
-        
+        numberOne = this.currentNumberPair.getNumberOne();
+        numberTwo = this.currentNumberPair.getNumberTwo();
         
         if (SIZE_VARIATION) {
-            int letterSizeOne = this.currentNumberPair.getNumberSizeOne();
-            int letterSizeTwo = this.currentNumberPair.getNumberSizeTwo();
+            int numberSizeOne = this.currentNumberPair.getNumberSizeOne();
+            int numberSizeTwo = this.currentNumberPair.getNumberSizeTwo();
             
-            theView.getLeftOption().setFont(new Font("Tahoma", letterSizeOne));
-            theView.getRightOption().setFont(new Font("Tahoma", letterSizeTwo));
+            theView.getLeftOption().setFont(new Font("Tahoma", numberSizeOne));
+            theView.getRightOption().setFont(new Font("Tahoma", numberSizeTwo));
         }
 
-        theView.getLeftOption().setText(String.valueOf(letterOne));
-        theView.getRightOption().setText(String.valueOf(letterTwo));
+        theView.getLeftOption().setText(String.valueOf(numberOne));
+        theView.getRightOption().setText(String.valueOf(numberTwo));
 
     }
     
