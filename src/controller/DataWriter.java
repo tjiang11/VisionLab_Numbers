@@ -5,9 +5,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
+import java.util.logging.Logger;
 
 import model.NumberPair;
-import model.NumberPairGenerator;
 import model.Player;
 
 
@@ -23,7 +23,8 @@ import model.Player;
  *
  */
 public class DataWriter {
-
+    private static Logger logger = Logger.getLogger("mylog");
+    
     public static final String DELIMITER = ",";
     public static final String SUBJECT_ID = "Subject ID";
     public static final String LEFT_CHOICE = "Left Choice";
@@ -42,9 +43,7 @@ public class DataWriter {
     /** The subject to grab data from. */
     private Player player;
     /** NumberPair to grab data from. */
-    private NumberPair NumberPair;
-    /** NumberPairGenerator to grab data from */
-    private NumberPairGenerator NumberPairGenerator;
+    private NumberPair numberPair;
     
     /**
      * Constructor for data writer that takes in a controller
@@ -53,18 +52,16 @@ public class DataWriter {
      */
     public DataWriter(NumberGameController lgc) {
         this.player = lgc.getThePlayer();
-        this.NumberPair = lgc.getCurrentNumberPair();
-        this.NumberPairGenerator = lgc.getApg();
+        this.numberPair = lgc.getCurrentNumberPair();
     }
     
     /**
-     * Regrab the current subject and NumberPair from the controller.
+     * Regrab the current subject and alphapair from the controller.
      * @param lgc Controller to grab data from
      */
     public void grabData(NumberGameController lgc) {
         this.player = lgc.getThePlayer();
-        this.NumberPair = lgc.getCurrentNumberPair();
-        this.NumberPairGenerator = lgc.getApg();
+        this.numberPair = lgc.getCurrentNumberPair();
     }
     
     /**
@@ -94,7 +91,7 @@ public class DataWriter {
             /** Create new csv file for subject if doesn't exist */
             File file = new File(path + "\\results\\" + subjectId 
                     + "\\results_" + subjectId + ".csv");            
-            System.out.println(file.getPath());
+            logger.info(file.getPath());
             String text = "";
             
             /** Write data to new file or append to old file */
@@ -180,16 +177,16 @@ public class DataWriter {
     
     private String generateLeftChoiceText() {
         return String.valueOf(
-                this.NumberPair.getNumberOne());
+                this.numberPair.getNumberOne());
     }
     
     private String generateRightChoiceText() {
         return String.valueOf(
-                this.NumberPair.getNumberTwo());
+                this.numberPair.getNumberTwo());
     }
     
     private String generateWhichSideCorrectText() {
-        if (this.NumberPair.isLeftCorrect()) {
+        if (this.numberPair.isLeftCorrect()) {
             return "left";
         } else {
             return "right";
@@ -217,7 +214,7 @@ public class DataWriter {
     }
     
     private String generateDifficultyText() {
-        int difficulty = this.NumberPairGenerator.getDifficultyMode();
+        int difficulty = this.numberPair.getDifficulty();
         if (difficulty == 0) {
             return "EASY";
         } else if (difficulty == 1) {
@@ -230,17 +227,17 @@ public class DataWriter {
     
     private String generateDistanceText() {
         return Integer.toString(Math.abs(
-                    this.NumberPair.getDifference()));
+                    this.numberPair.getDifference()));
     }
     
     private String generateLeftChoiceSizeText() {
-    	return Integer.toString(
-    			this.NumberPair.getNumberSizeOne());
+        return Integer.toString(
+                this.numberPair.getNumberSizeOne());
     }
     
     private String generateRightChoiceSizeText() {
         return Integer.toString(
-                this.NumberPair.getNumberSizeTwo());
+                this.numberPair.getNumberSizeTwo());
     }
     
     private String generateResponseTimeText() {

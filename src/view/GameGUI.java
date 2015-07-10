@@ -7,7 +7,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
@@ -28,15 +30,9 @@ public class GameGUI {
     
     /** Whether or not to slowly drain the progress bar as time pressure. */
     static final boolean PROGRESS_DRAIN = false;
-
-    
-    /** Width of the game window. */
-    static final int SCREEN_WIDTH = 800;
-    /** Height of the game window. */
-    static final int SCREEN_HEIGHT = 600;
     
     /** Controller for setting event handlers */
-    private NumberGameController NGC;
+    private NumberGameController LGC;
 
     /** The JavaFX stage for the game. */
     private Stage primaryStage;
@@ -53,6 +49,8 @@ public class GameGUI {
     /** Login Screen - Text field for user to enter their 
      * Subject ID. */
     private TextField enterId;
+    /** Login Box to contain start button, feedback label, and enterId TextField. */
+    private VBox loginBox;
     
     /** Game Screen - The left choice. */
     private Label leftOption;
@@ -64,11 +62,15 @@ public class GameGUI {
     private Label getReady;
     /** Game Screen - Get Ready Bar */
     private ProgressBar getReadyBar;
+    private VBox getReadyBox;
     /** Game Screen - Stars */
     private ImageView starNodes[];
+
     
     /** End Screen - message informing the user has finished. */
     private Label congratulations;
+    
+    private VBox finishMessage;
     
     /** 
      * Constructor for the user interface. Sets the stage
@@ -95,16 +97,24 @@ public class GameGUI {
         Scene loginScene = SetUp.setUpLoginScreen(this, this.primaryStage);
         this.scene = loginScene;
         
-        NGC = new NumberGameController(this);
-        NGC.setLoginHandlers();
-
-        this.enterId.requestFocus();
+        LGC = new NumberGameController(this);
+        LGC.setLoginHandlers();
         
         this.primaryStage.setResizable(false);
-        this.primaryStage.setFullScreen(false);
+        
         this.primaryStage.sizeToScene();
+        
         this.primaryStage.setScene(this.scene);
-        this.primaryStage.show();  
+
+        this.primaryStage.show(); 
+        
+        System.out.println("Width: " + this.getLoginBox().getHeight());
+        
+        this.getLoginBox().setLayoutY(SetUp.SCREEN_HEIGHT / 2 - this.getLoginBox().getHeight());
+        this.getLoginBox().setLayoutX((SetUp.SCREEN_WIDTH / 2) - (this.getLoginBox().getWidth() / 2));
+        
+        this.primaryStage.setFullScreenExitKeyCombination(KeyCombination.NO_MATCH);
+        this.primaryStage.setFullScreen(true);
     }
     
     /**
@@ -119,14 +129,21 @@ public class GameGUI {
             
             this.scene = gameScene;
             this.primaryStage.setScene(this.scene);
-           
             
-            this.NGC.prepareFirstRound();
+            System.out.println(this.getReadyBar.getWidth());
+            this.getGetReadyBox().setLayoutY((SetUp.SCREEN_HEIGHT / 2) - this.getGetReadyBox().getHeight());
+            this.getGetReadyBox().setLayoutX((SetUp.SCREEN_WIDTH / 2) - (this.getGetReadyBox().getWidth() / 2));
+            
+            this.getReadyBar.setLayoutX((SetUp.SCREEN_WIDTH / 2) - (this.getReady.getWidth() / 2));
+            
+            this.primaryStage.setFullScreen(true);
+            
+            this.LGC.prepareFirstRound();
             
             /** Set event handlers for gameplay */
             
-            if (PROGRESS_DRAIN) { this.NGC.beginProgressBarDrainage(); }
-            this.NGC.setGameHandlers();
+            if (PROGRESS_DRAIN) { this.LGC.beginProgressBarDrainage(); }
+            this.LGC.setGameHandlers();
             
         } catch (NumberFormatException e) {
             System.out.println("Oops!");
@@ -144,6 +161,11 @@ public class GameGUI {
         Scene finishScene = SetUp.setUpFinishScreen(this, stage, lgc);
         this.scene = finishScene;
         this.primaryStage.setScene(this.scene);
+
+        this.getFinishMessage().setLayoutX((SetUp.SCREEN_WIDTH / 2) - (this.getFinishMessage().getWidth() / 2));
+        this.getFinishMessage().setLayoutY((SetUp.SCREEN_HEIGHT / 2) - this.getFinishMessage().getHeight());
+        
+        this.primaryStage.setFullScreen(true);
     }
     
     /**
@@ -256,6 +278,30 @@ public class GameGUI {
 
     public void setStarNodes(ImageView starNodes[]) {
         this.starNodes = starNodes;
+    }
+
+    public VBox getLoginBox() {
+        return loginBox;
+    }
+
+    public void setLoginBox(VBox loginBox) {
+        this.loginBox = loginBox;
+    }
+
+    public VBox getGetReadyBox() {
+        return getReadyBox;
+    }
+
+    public void setGetReadyBox(VBox getReadyBox) {
+        this.getReadyBox = getReadyBox;
+    }
+
+    public VBox getFinishMessage() {
+        return finishMessage;
+    }
+
+    public void setFinishMessage(VBox finishMessage) {
+        this.finishMessage = finishMessage;
     }
 
 }

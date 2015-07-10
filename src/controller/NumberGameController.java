@@ -1,6 +1,7 @@
 package controller;
 
 import java.net.URL;
+import java.util.logging.Logger;
 
 import config.Config;
 import model.NumberPair;
@@ -45,6 +46,7 @@ import view.GameGUI;
  * 
  */
 public class NumberGameController implements GameController {
+    private static Logger logger = Logger.getLogger("mylog");
     
     /** Punish for wrong answers */
     static final boolean PUNISH = true;
@@ -160,10 +162,7 @@ public class NumberGameController implements GameController {
                     gameController.prepareNextRound(); 
                     
                     /** Export data to CSV file in folder 'results/<subject_id>' */
-                    dataWriter.writeToCSV();
-                    
-                    /** Set difficulty of NumberPairGenerator */
-                    gameController.apg.setDifficulty();       
+                    dataWriter.writeToCSV();  
                 }
 
             }
@@ -289,8 +288,7 @@ public class NumberGameController implements GameController {
                 setOptions();
                 state = CurrentState.WAITING_FOR_RESPONSE;
                 responseTimeMetric = System.nanoTime();
-                theView.getGetReady().setText("");
-                theView.getGetReadyBar().setOpacity(0.0);
+                theView.getGetReadyBox().setVisible(false);
             }
         });
         new Thread(sleeper).start();
@@ -304,7 +302,8 @@ public class NumberGameController implements GameController {
         recordResponseTime();
         clearRound();
         waitBeforeNextRoundAndUpdate(TIME_BETWEEN_ROUNDS);
-
+        gameController.apg.setDifficulty();     
+        
         if (thePlayer.getNumRounds() >= NUM_ROUNDS) {
             this.finishGame();
         }
@@ -319,7 +318,7 @@ public class NumberGameController implements GameController {
         System.out.println("Done");
         theView.setFinishScreen(theView.getPrimaryStage(), gameController);
     }
-    
+
     /**
      * Clears the options.
      */
@@ -366,6 +365,9 @@ public class NumberGameController implements GameController {
         numberOne = this.currentNumberPair.getNumberOne();
         numberTwo = this.currentNumberPair.getNumberTwo();
         
+        theView.getLeftOption().setText(String.valueOf(numberOne));
+        theView.getRightOption().setText(String.valueOf(numberTwo));
+        
         if (SIZE_VARIATION) {
             int numberSizeOne = this.currentNumberPair.getNumberSizeOne();
             int numberSizeTwo = this.currentNumberPair.getNumberSizeTwo();
@@ -373,10 +375,6 @@ public class NumberGameController implements GameController {
             theView.getLeftOption().setFont(new Font("Tahoma", numberSizeOne));
             theView.getRightOption().setFont(new Font("Tahoma", numberSizeTwo));
         }
-
-        theView.getLeftOption().setText(String.valueOf(numberOne));
-        theView.getRightOption().setText(String.valueOf(numberTwo));
-
     }
     
     /** 
@@ -388,7 +386,8 @@ public class NumberGameController implements GameController {
         
         //Convert from nanoseconds to seconds.
         double responseTimeSec = responseTime / 1000000000.0;
-        System.out.println("Your response time was: " 
+
+        logger.info("Your response time was: " 
                 + responseTimeSec + " seconds");
     }
     

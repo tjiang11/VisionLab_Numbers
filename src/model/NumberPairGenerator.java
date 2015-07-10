@@ -3,8 +3,10 @@ package model;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.apache.log4j.Logger;
+
 /**
- * Generates NumberPairs with random numbers.
+ * Generates NumberPairs with random letters.
  * 
  * Classes Related To:
  *  -NumberPair.java
@@ -15,7 +17,9 @@ import java.util.Random;
  */
 public class NumberPairGenerator implements PairGenerator {
     
-    /** Number of characters to choose from. */
+    private static final Logger logger = Logger.getLogger("Global");
+    
+    /** Number of intacters to choose from. */
     static final int NUM_NUMBERS = 26;
     
     /** Map from each difficulty mode to an integer representation. */
@@ -26,7 +30,7 @@ public class NumberPairGenerator implements PairGenerator {
     /** Number of difficulty modes. */
     static final int NUM_MODES = 3;
     
-    /** Define the lowest distance (in number of numbers) each difficulty can have. */
+    /** Define the lowest distance (in number of letters) each difficulty can have. */
     static final int EASY_MODE_MIN = 14;
     static final int MEDIUM_MODE_MIN = 8;
     static final int HARD_MODE_MIN = 2;
@@ -98,11 +102,11 @@ public class NumberPairGenerator implements PairGenerator {
                         randomGenerator.nextInt(this.difficultySet.size()));
         if (this.difficultySet.isEmpty()) {
             this.fillDifficultySet();
-        }
+        }   
     }
-
+    
     /**
-     * Gets a new NumberPair with random numbers while
+     * Gets a new NumberPair with random letters while
      * checking to make sure that the same choice will
      * not be picked more than three times in a row
      * as being correct.
@@ -124,18 +128,21 @@ public class NumberPairGenerator implements PairGenerator {
     public void getNewDifficultyPair() {
         int difference = 0;
         if (this.difficultyMode == EASY_MODE) {
+            logger.info("Easy mode");
             difference = this.randomGenerator.nextInt(NUM_CHOICES_IN_MODE) + EASY_MODE_MIN;
         } else if (this.difficultyMode == MEDIUM_MODE) {
+            logger.info("Medium mode");
             difference = this.randomGenerator.nextInt(NUM_CHOICES_IN_MODE) + MEDIUM_MODE_MIN;
         } else if (this.difficultyMode == HARD_MODE) {
+            logger.info("Hard mode");
             difference = this.randomGenerator.nextInt(NUM_CHOICES_IN_MODE) + HARD_MODE_MIN;
         }
         this.getNewPair(difference);
     }
     
     /**
-     * Gets a new NumberPair with numbers a certain distance apart.
-     * @param difference distance between the numbers.
+     * Gets a new NumberPair with letters a certain distance apart.
+     * @param difference distance between the letters.
      */
     public void getNewPair(int difference) {
         int numberOne, numberTwo;
@@ -150,10 +157,11 @@ public class NumberPairGenerator implements PairGenerator {
             numberOne = temp;
         }
         this.checkAndSet(numberOne, numberTwo);
+        System.out.println("numberOne: " + numberOne + " numberTwo: " + numberTwo);
     }
     
     /**
-     * Check if choices are the same and set the reverse if the same side has been
+     * Check if the same side is correct as last round and set the reverse if the same side has been
      * correct for MAX_TIMES_SAME_ANSWER times in a row.
      * @param numberOne
      * @param numberTwo
@@ -164,7 +172,7 @@ public class NumberPairGenerator implements PairGenerator {
         if (this.getSameChoice() >= MAX_TIMES_SAME_ANSWER) {
             this.setReversePair(numberOne, numberTwo);
         } else {
-            this.setNumberPair(new NumberPair(numberOne, numberTwo));
+            this.setNumberPair(new NumberPair(numberOne, numberTwo, this.difficultyMode));
         }
     }
     
@@ -172,7 +180,7 @@ public class NumberPairGenerator implements PairGenerator {
      * Occurs under the condition that the same side has been correct
      * for MAX_TIMES_SAME_ANSWER times in a row.
      * 
-     * Set the NumberPair with the positions of the right and left numbers
+     * Set the NumberPair with the positions of the right and left letters
      * flipped as to what it would have otherwise been.
      * 
      * Toggles the lastWasLeft property because we are toggling the side
@@ -183,15 +191,15 @@ public class NumberPairGenerator implements PairGenerator {
      * @param numberTwo
      */
     public void setReversePair(int numberOne, int numberTwo) {
-        this.setNumberPair(new NumberPair(numberTwo, numberOne));
+        this.setNumberPair(new NumberPair(numberTwo, numberOne, this.difficultyMode));
         this.toggleLastWasLeft();
         this.setSameChoice(0);
     }
 
     /**
      * Check if the same side is correct as the last round.
-     * @param numberOne Position of first number of current round.
-     * @param numberTwo Position of second number of current round.
+     * @param numberOne Position of first letter of current round.
+     * @param numberTwo Position of second letter of current round.
      */
     public void checkSameChoice(int numberOne, int numberTwo) {
         if (numberOne > numberTwo) {

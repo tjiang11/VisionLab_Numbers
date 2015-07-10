@@ -17,6 +17,7 @@ public class Config {
     private static Properties defaultProperties;
     private final static String DEFAULT_CONFIG_FILE_NAME = "defaultconfig.properties";
     
+    
     public Config() {
         defaultLoad();
     }
@@ -26,6 +27,7 @@ public class Config {
      */
     private void defaultLoad()
     {
+        // load the properties from the default config file
         defaultProperties = new Properties();
         InputStream in;
         try
