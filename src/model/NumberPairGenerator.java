@@ -157,7 +157,6 @@ public class NumberPairGenerator implements PairGenerator {
             numberOne = temp;
         }
         this.checkAndSet(numberOne, numberTwo);
-        System.out.println("numberOne: " + numberOne + " numberTwo: " + numberTwo);
     }
     
     /**
