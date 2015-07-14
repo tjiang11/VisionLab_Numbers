@@ -369,8 +369,8 @@ public class NumberGameController implements GameController {
         theView.getRightOption().setText(String.valueOf(numberTwo));
         
         if (SIZE_VARIATION) {
-            int numberSizeOne = this.currentNumberPair.getNumberSizeOne();
-            int numberSizeTwo = this.currentNumberPair.getNumberSizeTwo();
+            int numberSizeOne = this.currentNumberPair.getFontSizeOne();
+            int numberSizeTwo = this.currentNumberPair.getFontSizeTwo();
             
             theView.getLeftOption().setFont(new Font("Tahoma", numberSizeOne));
             theView.getRightOption().setFont(new Font("Tahoma", numberSizeTwo));

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.logging.Logger;
 
 import model.NumberPair;
+import model.NumberPairGenerator;
 import model.Player;
 
 
@@ -36,6 +37,7 @@ public class DataWriter {
     public static final String DISTANCE = "Distance";
     public static final String LEFT_CHOICE_SIZE = "Left Choice Size";
     public static final String RIGHT_CHOICE_SIZE = "Right Choice Size";
+    public static final String WHICH_SIZE_CORRECT = "Which Size Correct";
     public static final String RESPONSE_TIME = "Response Time";
     public static final String DATE_TIME = "Date/Time";
     public static final String CONSECUTIVE_ROUND = "Consecutive Rounds";
@@ -44,19 +46,24 @@ public class DataWriter {
     private Player player;
     /** NumberPair to grab data from. */
     private NumberPair numberPair;
+    /////////////////////////////////
+    /** NumberPairGenerator to grab data from */
+    private NumberPairGenerator numberPairGenerator;
+    //////////////////////////////////////////
     
     /**
      * Constructor for data writer that takes in a controller
-     * and grabs the player and alpha pair.
+     * and grabs the player and number pair.
      * @param lgc Controller to grab data from
      */
     public DataWriter(NumberGameController lgc) {
         this.player = lgc.getThePlayer();
         this.numberPair = lgc.getCurrentNumberPair();
+        this.numberPairGenerator = lgc.getApg();
     }
     
     /**
-     * Regrab the current subject and alphapair from the controller.
+     * Regrab the current subject and numberpair from the controller.
      * @param lgc Controller to grab data from
      */
     public void grabData(NumberGameController lgc) {
@@ -128,6 +135,7 @@ public class DataWriter {
                 + DISTANCE + DELIMITER
                 + LEFT_CHOICE_SIZE + DELIMITER
                 + RIGHT_CHOICE_SIZE + DELIMITER
+                + WHICH_SIZE_CORRECT + DELIMITER
                 + RESPONSE_TIME + DELIMITER
                 + DATE_TIME + DELIMITER
                 + CONSECUTIVE_ROUND + "\n";
@@ -149,6 +157,7 @@ public class DataWriter {
         String distance = this.generateDistanceText();
         String leftChoiceSize = this.generateLeftChoiceSizeText();
         String rightChoiceSize = this.generateRightChoiceSizeText();
+        String whichSizeCorrect = this.generateSizeCorrectText(whichSideCorrect);
         String responseTime = this.generateResponseTimeText();
         String dateTime = this.generateDateTimeText();
         String consecutiveRounds = this.generateConsecutiveRoundsText();
@@ -163,6 +172,7 @@ public class DataWriter {
                 + distance + DELIMITER
                 + leftChoiceSize + DELIMITER
                 + rightChoiceSize + DELIMITER
+                + whichSizeCorrect + DELIMITER
                 + responseTime + DELIMITER
                 + dateTime + DELIMITER
                 + consecutiveRounds + "\n";
@@ -214,7 +224,7 @@ public class DataWriter {
     }
     
     private String generateDifficultyText() {
-        int difficulty = this.numberPair.getDifficulty();
+        int difficulty = this.numberPairGenerator.getDifficultyMode();
         if (difficulty == 0) {
             return "EASY";
         } else if (difficulty == 1) {
@@ -232,12 +242,21 @@ public class DataWriter {
     
     private String generateLeftChoiceSizeText() {
         return Integer.toString(
-                this.numberPair.getNumberSizeOne());
+                this.numberPair.getFontSizeOne());
     }
     
     private String generateRightChoiceSizeText() {
         return Integer.toString(
-                this.numberPair.getNumberSizeTwo());
+                this.numberPair.getFontSizeTwo());
+    }
+    
+    private String generateSizeCorrectText(String whichSideCorrect) {
+        if (whichSideCorrect.equals("left") && (this.numberPair.getFontSizeOne() > this.numberPair.getFontSizeTwo())
+                || whichSideCorrect.equals("right") && (this.numberPair.getFontSizeTwo() > this.numberPair.getFontSizeOne())) {
+            return "Bigger";
+        } else {
+            return "Smaller";
+        }
     }
     
     private String generateResponseTimeText() {

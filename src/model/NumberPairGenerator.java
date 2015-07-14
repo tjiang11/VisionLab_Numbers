@@ -6,7 +6,7 @@ import java.util.Random;
 import org.apache.log4j.Logger;
 
 /**
- * Generates NumberPairs with random letters.
+ * Generates NumberPairs with random numbers.
  * 
  * Classes Related To:
  *  -NumberPair.java
@@ -15,9 +15,17 @@ import org.apache.log4j.Logger;
  * 6-25-2015
  *
  */
-public class NumberPairGenerator implements PairGenerator {
+public class NumberPairGenerator {
     
     private static final Logger logger = Logger.getLogger("Global");
+    
+    /**
+     * Max number of times the same side may be the correct choice.
+     */
+    static int MAX_TIMES_SAME_ANSWER = 3;
+    
+    /** Number of times the same relative size (bigger or smaller) can be correct */
+    static final int MAX_TIMES_SAME_SIZE_CORRECT = 1;
     
     /** Number of intacters to choose from. */
     static final int NUM_NUMBERS = 26;
@@ -27,10 +35,17 @@ public class NumberPairGenerator implements PairGenerator {
     static final int MEDIUM_MODE = 1;
     static final int HARD_MODE = 2;
     
+    static final int SMALL_CHOICE_FONT_SIZE = 150;
+    static final int MEDIUM_CHOICE_FONT_SIZE = 200;
+    static final int BIG_CHOICE_FONT_SIZE = 300;
+    static final double EASY_MODE_FONT_RATIO = .4;
+    static final double MEDIUM_MODE_FONT_RATIO = .7;
+    static final double HARD_MODE_FONT_RATIO = .85;
+    
     /** Number of difficulty modes. */
     static final int NUM_MODES = 3;
     
-    /** Define the lowest distance (in number of letters) each difficulty can have. */
+    /** Define the lowest distance (in number of numbers) each difficulty can have. */
     static final int EASY_MODE_MIN = 14;
     static final int MEDIUM_MODE_MIN = 8;
     static final int HARD_MODE_MIN = 2;
@@ -38,9 +53,7 @@ public class NumberPairGenerator implements PairGenerator {
     /** The highest distance each difficulty can have is their minimum plus NUM_CHOICES_IN_MODE. */
     static final int NUM_CHOICES_IN_MODE = 4;
     
-    /**
-     * Number of triplets of modes per set. See fillDifficultySet().
-     */
+    /** Number of triplets of modes per set. See fillDifficultySet(). */
     static final int NUM_MODE_TRIPLETS = 2;
     
     /** Random number generator. */
@@ -56,18 +69,24 @@ public class NumberPairGenerator implements PairGenerator {
     private ArrayList<Integer> difficultySet;
     
     /** A measure of how many times the same side has been correct. */
-    private int sameChoice;
+    private int sameChoiceCorrect;
+       
+    /** A measure of how many times the same size has been correct. */
+    private int sameSizeCorrect;
     
     /** True if the last correct choice was left. False otherwise. */
     private boolean lastWasLeft;
+    
+    /** True if the last correct choice was big. False otherwise. */
+    private boolean lastWasBig;
     
     /**
      * Constructor. 
      */
     public NumberPairGenerator() {
-        this.getNewPair();
-        this.setSameChoice(0);
+        this.setSameChoiceCorrect(0);
         this.setLastWasLeft(false);
+        this.setLastWasBig(false);
         this.difficultyMode = EASY_MODE;
         this.difficultySet = new ArrayList<Integer>();
         this.fillDifficultySet();
@@ -104,59 +123,70 @@ public class NumberPairGenerator implements PairGenerator {
             this.fillDifficultySet();
         }   
     }
-    
-    /**
-     * Gets a new NumberPair with random letters while
-     * checking to make sure that the same choice will
-     * not be picked more than three times in a row
-     * as being correct.
-     */
-    public void getNewPair() {
-        System.out.println(this.getSameChoice());
-        int numberOne, numberTwo;
-        numberOne = this.randomGenerator.nextInt(NUM_NUMBERS) + 1;
-        do {
-            numberTwo = this.randomGenerator.nextInt(NUM_NUMBERS) + 1; 
-        } while (numberOne == numberTwo);        
-           
-        this.checkAndSet(numberOne, numberTwo);
-    }
-    
+
     /**
      * Get a new pair based on the current difficulty.
      */
     public void getNewDifficultyPair() {
+        int baseFontSize = this.chooseBaseFontSize();
+        int otherFontSize = 0;
         int difference = 0;
         if (this.difficultyMode == EASY_MODE) {
             logger.info("Easy mode");
             difference = this.randomGenerator.nextInt(NUM_CHOICES_IN_MODE) + EASY_MODE_MIN;
+            otherFontSize = (int) (EASY_MODE_FONT_RATIO * baseFontSize);
         } else if (this.difficultyMode == MEDIUM_MODE) {
             logger.info("Medium mode");
             difference = this.randomGenerator.nextInt(NUM_CHOICES_IN_MODE) + MEDIUM_MODE_MIN;
+            otherFontSize = (int) (MEDIUM_MODE_FONT_RATIO * baseFontSize);
         } else if (this.difficultyMode == HARD_MODE) {
             logger.info("Hard mode");
             difference = this.randomGenerator.nextInt(NUM_CHOICES_IN_MODE) + HARD_MODE_MIN;
+            otherFontSize = (int) (HARD_MODE_FONT_RATIO * baseFontSize);
         }
-        this.getNewPair(difference);
+        
+        if (randomGenerator.nextBoolean()) {
+            int temp = baseFontSize;
+            baseFontSize = otherFontSize;
+            otherFontSize = temp;
+        }
+        
+        this.getNewPair(difference, baseFontSize, otherFontSize);
     }
     
     /**
-     * Gets a new NumberPair with letters a certain distance apart.
-     * @param difference distance between the letters.
+     * Determine the base font size to build the font ratio off of. The other
+     * font size choice will be scaled down from this font size.
+     * @return int The base font size.
      */
-    public void getNewPair(int difference) {
+    public int chooseBaseFontSize() {
+        int choiceOfSize = randomGenerator.nextInt(3);
+        switch (choiceOfSize) {
+        case 0:
+            return SMALL_CHOICE_FONT_SIZE;
+        case 1:
+            return MEDIUM_CHOICE_FONT_SIZE;
+        case 2:
+            return BIG_CHOICE_FONT_SIZE;
+        }
+        return 0;
+    }
+    
+    /**
+     * Gets a new NumberPair with numbers a certain distance apart.
+     * @param difference distance between the numbers.
+     */
+    public void getNewPair(int difference, int fontSizeOne, int fontSizeTwo) {
         int numberOne, numberTwo;
-        numberOne = this.randomGenerator.nextInt(NUM_NUMBERS - difference) + 1;
+        numberOne = this.randomGenerator.nextInt(NUM_NUMBERS - difference);
         numberTwo = numberOne + difference;
         
-        //Swap the order
-        int x = this.randomGenerator.nextInt(2);
-        if (x == 1) {
+        if (randomGenerator.nextBoolean()) {
             int temp = numberTwo;
             numberTwo = numberOne;
             numberOne = temp;
         }
-        this.checkAndSet(numberOne, numberTwo);
+        this.checkAndSet(numberOne, numberTwo, fontSizeOne, fontSizeTwo);
     }
     
     /**
@@ -165,13 +195,24 @@ public class NumberPairGenerator implements PairGenerator {
      * @param numberOne
      * @param numberTwo
      */
-    private void checkAndSet(int numberOne, int numberTwo) {
+    private void checkAndSet(int numberOne, int numberTwo, int fontSizeOne, int fontSizeTwo) {
         this.checkSameChoice(numberOne, numberTwo);
+
+        this.checkSameSize(numberOne, numberTwo, fontSizeOne, fontSizeTwo);
         
-        if (this.getSameChoice() >= MAX_TIMES_SAME_ANSWER) {
-            this.setReversePair(numberOne, numberTwo);
+        if (this.getSameSizeCorrect() >= MAX_TIMES_SAME_SIZE_CORRECT) {
+            int temp = fontSizeOne;
+            fontSizeOne = fontSizeTwo;
+            fontSizeTwo = temp;
+            
+            this.setSameSizeCorrect(0);
+            this.toggleLastWasBig();
+        }
+        
+        if (this.getSameChoiceCorrect() >= MAX_TIMES_SAME_ANSWER) {
+            this.setReversePair(numberOne, numberTwo, fontSizeOne, fontSizeTwo);
         } else {
-            this.setNumberPair(new NumberPair(numberOne, numberTwo, this.difficultyMode));
+            this.setNumberPair(new NumberPair(numberOne, numberTwo, fontSizeOne, fontSizeTwo));
         }
     }
     
@@ -179,7 +220,7 @@ public class NumberPairGenerator implements PairGenerator {
      * Occurs under the condition that the same side has been correct
      * for MAX_TIMES_SAME_ANSWER times in a row.
      * 
-     * Set the NumberPair with the positions of the right and left letters
+     * Set the NumberPair with the positions of the right and left numbers
      * flipped as to what it would have otherwise been.
      * 
      * Toggles the lastWasLeft property because we are toggling the side
@@ -189,33 +230,58 @@ public class NumberPairGenerator implements PairGenerator {
      * @param numberOne 
      * @param numberTwo
      */
-    public void setReversePair(int numberOne, int numberTwo) {
-        this.setNumberPair(new NumberPair(numberTwo, numberOne, this.difficultyMode));
+    public void setReversePair(int numberOne, int numberTwo, int fontSizeOne, int fontSizeTwo) {
+        this.setNumberPair(new NumberPair(numberTwo, numberOne, fontSizeTwo, fontSizeOne));
         this.toggleLastWasLeft();
-        this.setSameChoice(0);
+        this.setSameChoiceCorrect(0);
     }
 
     /**
      * Check if the same side is correct as the last round.
-     * @param numberOne Position of first letter of current round.
-     * @param numberTwo Position of second letter of current round.
+     * @param numberOne Position of first number of current round.
+     * @param numberTwo Position of second number of current round.
      */
     public void checkSameChoice(int numberOne, int numberTwo) {
         if (numberOne > numberTwo) {
             if (this.lastWasLeft) {
                 this.incrementSameChoice();
             } else {
-                this.setSameChoice(0);
+                this.setSameChoiceCorrect(0);
             }
             this.lastWasLeft = true;
         } else {
             if (!this.lastWasLeft) {
                 this.incrementSameChoice();
             } else {
-                this.setSameChoice(0);
+                this.setSameChoiceCorrect(0);
             }
             this.lastWasLeft = false;
         }   
+    }
+    
+    /**
+     * Check if the same relative size (bigger or smaller) is correct
+     * as the last round.
+     * @param fontSizeOne
+     * @param fontSizeTwo
+     */
+    private void checkSameSize(int numberOne, int numberTwo, int fontSizeOne, int fontSizeTwo) {
+        if (numberOne > numberTwo && fontSizeOne > fontSizeTwo ||
+                numberTwo > numberOne && fontSizeTwo > fontSizeOne) {
+            if (this.lastWasBig) {
+                this.incrementSameSizeCorrect();
+            } else {
+                this.setSameSizeCorrect(0);
+            }
+            this.lastWasBig = true;
+        } else {
+            if (!this.lastWasBig) {
+                this.incrementSameSizeCorrect();
+            } else {
+                this.setSameSizeCorrect(0);
+            }
+            this.lastWasBig = false;
+        }
     }
 
     /**
@@ -227,7 +293,14 @@ public class NumberPairGenerator implements PairGenerator {
         } else {
             this.lastWasLeft = true;
         }
-        
+    }
+    
+    private void toggleLastWasBig() {
+        if (this.lastWasBig) {
+            this.lastWasBig = false;
+        } else {
+            this.lastWasBig = true;
+        }
     }
     
     public void increaseDifficulty() {
@@ -242,16 +315,16 @@ public class NumberPairGenerator implements PairGenerator {
         this.numberPair = numberPair;
     }
 
-    public int getSameChoice() {
-        return this.sameChoice;
+    public int getSameChoiceCorrect() {
+        return this.sameChoiceCorrect;
     }
 
-    public void setSameChoice(int sameChoice) {
-        this.sameChoice = sameChoice;
+    public void setSameChoiceCorrect(int sameChoiceCorrect) {
+        this.sameChoiceCorrect = sameChoiceCorrect;
     }
 
     public void incrementSameChoice() {
-        this.sameChoice++;
+        this.sameChoiceCorrect++;
     }
     
     public boolean isLastWasLeft() {
@@ -264,5 +337,25 @@ public class NumberPairGenerator implements PairGenerator {
     
     public int getDifficultyMode() {
         return this.difficultyMode;
+    }
+
+	public int getSameSizeCorrect() {
+		return sameSizeCorrect;
+	}
+
+	public void setSameSizeCorrect(int sameSizeCorrect) {
+		this.sameSizeCorrect = sameSizeCorrect;
+	}
+
+	public boolean isLastWasBig() {
+		return lastWasBig;
+	}
+
+	public void setLastWasBig(boolean lastWasBig) {
+		this.lastWasBig = lastWasBig;
+	}
+	
+    public void incrementSameSizeCorrect() {
+        this.sameSizeCorrect++;
     }
 }
