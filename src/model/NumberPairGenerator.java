@@ -46,12 +46,12 @@ public class NumberPairGenerator {
     static final int NUM_MODES = 3;
     
     /** Define the lowest distance (in number of numbers) each difficulty can have. */
-    static final int EASY_MODE_MIN = 14;
-    static final int MEDIUM_MODE_MIN = 8;
-    static final int HARD_MODE_MIN = 2;
+    public static final int EASY_MODE_MIN = 14;
+    public static final int MEDIUM_MODE_MIN = 8;
+    public static final int HARD_MODE_MIN = 2;
     
     /** The highest distance each difficulty can have is their minimum plus NUM_CHOICES_IN_MODE. */
-    static final int NUM_CHOICES_IN_MODE = 4;
+    public static final int NUM_CHOICES_IN_MODE = 4;
     
     /** Number of triplets of modes per set. See fillDifficultySet(). */
     static final int NUM_MODE_TRIPLETS = 2;
@@ -128,6 +128,7 @@ public class NumberPairGenerator {
      * Get a new pair based on the current difficulty.
      */
     public void getNewDifficultyPair() {
+    	this.setDifficulty();
         int baseFontSize = this.chooseBaseFontSize();
         int otherFontSize = 0;
         int difference = 0;
@@ -178,7 +179,7 @@ public class NumberPairGenerator {
      */
     public void getNewPair(int difference, int fontSizeOne, int fontSizeTwo) {
         int numberOne, numberTwo;
-        numberOne = this.randomGenerator.nextInt(NUM_NUMBERS - difference);
+        numberOne = this.randomGenerator.nextInt(NUM_NUMBERS - difference) + 1;
         numberTwo = numberOne + difference;
         
         if (randomGenerator.nextBoolean()) {

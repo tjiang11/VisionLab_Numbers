@@ -64,7 +64,7 @@ public class NumberGameController implements GameController {
     private DataWriter dataWriter;
     
     /** NumberPairGenerator to generate an NumberPair */
-    private NumberPairGenerator apg;
+    private NumberPairGenerator numberPairGenerator;
     /** The graphical user interface. */
     private GameGUI theView;
     /** The current scene. */
@@ -77,6 +77,8 @@ public class NumberGameController implements GameController {
     
     /** Used to measure response time. */
     private static long responseTimeMetric;
+    
+
     
     /** Current state of the game. */
     public static CurrentState state;
@@ -96,7 +98,7 @@ public class NumberGameController implements GameController {
         loadConfig();
         
         this.gameController = this;
-        this.apg = new NumberPairGenerator();
+        this.numberPairGenerator = new NumberPairGenerator();
         this.currentNumberPair = null;
         this.theView = view;
         this.theScene = view.getScene();
@@ -194,7 +196,6 @@ public class NumberGameController implements GameController {
         this.feedbackSound(feedbackSoundFileUrl, correct); 
         
         this.dataWriter.grabData(this);
-
     }
     
     /** Update the player appropriately.
@@ -301,8 +302,7 @@ public class NumberGameController implements GameController {
     public void prepareNextRound() {
         recordResponseTime();
         clearRound();
-        waitBeforeNextRoundAndUpdate(TIME_BETWEEN_ROUNDS);
-        gameController.apg.setDifficulty();     
+        waitBeforeNextRoundAndUpdate(TIME_BETWEEN_ROUNDS); 
         
         if (thePlayer.getNumRounds() >= NUM_ROUNDS) {
             this.finishGame();
@@ -359,8 +359,8 @@ public class NumberGameController implements GameController {
     public void setOptions() {
         int numberOne, numberTwo;
         
-        apg.getNewDifficultyPair();
-        this.currentNumberPair = apg.getNumberPair();
+        numberPairGenerator.getNewDifficultyPair();
+        this.currentNumberPair = numberPairGenerator.getNumberPair();
         
         numberOne = this.currentNumberPair.getNumberOne();
         numberTwo = this.currentNumberPair.getNumberTwo();
@@ -437,11 +437,11 @@ public class NumberGameController implements GameController {
     }
 
     public NumberPairGenerator getApg() {
-        return apg;
+        return numberPairGenerator;
     }
 
-    public void setApg(NumberPairGenerator apg) {
-        this.apg = apg;
+    public void setApg(NumberPairGenerator numberPairGenerator) {
+        this.numberPairGenerator = numberPairGenerator;
     }
     
     public GameGUI getTheView() {
