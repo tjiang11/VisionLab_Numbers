@@ -125,14 +125,14 @@ public class NumberGameController implements GameController {
         this.theScene = theView.getScene();
         
         this.theView.getStart().setOnAction(e -> theView.setGameScreen(
-                theView.getPrimaryStage(), theView.getEnterId().getText(), this));
+                theView.getEnterId().getText(), this));
         
         this.theScene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 if (event.getCode() == KeyCode.ENTER) {
                     theView.setGameScreen(
-                            theView.getPrimaryStage(), theView.getEnterId().getText(), gameController);
+                            theView.getEnterId().getText(), gameController);
                 }
             }
         });
@@ -190,9 +190,7 @@ public class NumberGameController implements GameController {
         correct = GameLogic.checkAnswerCorrect(e, ap);
         
         this.updateProgressBar(view, correct);
-        
         this.updatePlayer(currentPlayer, correct);   
-        
         this.feedbackSound(feedbackSoundFileUrl, correct); 
         
         this.dataWriter.grabData(this);
@@ -316,7 +314,7 @@ public class NumberGameController implements GameController {
     private void finishGame() {
         state = CurrentState.FINISHED;
         System.out.println("Done");
-        theView.setFinishScreen(theView.getPrimaryStage(), gameController);
+        theView.setFinishScreen(gameController);
     }
 
     /**

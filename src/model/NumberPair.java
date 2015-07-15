@@ -1,8 +1,7 @@
 package model;
 
-import java.util.Random;
 /** 
- * Object to represent a pair of capital alphabetical numbers.
+ * Object to represent a pair of numbers.
  * 
  * @author Tony Jiang
  * 6-25-2015
