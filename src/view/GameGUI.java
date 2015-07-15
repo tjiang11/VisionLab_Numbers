@@ -52,6 +52,9 @@ public class GameGUI {
     /** Login Box to contain start button, feedback label, and enterId TextField. */
     private VBox loginBox;
     
+    /** Instructions Screen - Next button */
+    private Button next;
+    
     /** Game Screen - The left choice. */
     private Label leftOption;
     /** Game Screen - The right choice. */
@@ -118,14 +121,25 @@ public class GameGUI {
     }
     
     /**
+     * Sets the screen where instructions are shown.
+     */
+    public void setInstructionsScreen() {
+        Scene instructionsScene = SetUp.setUpInstructionsScreen(this, this.primaryStage);
+        this.primaryStage.setScene(instructionsScene);
+        this.primaryStage.setFullScreen(true);
+        this.getNext().setLayoutX(getNext().getLayoutX() - this.getNext().getWidth() / 2);
+        this.LGC.setInstructionsHandlers();
+    }
+    
+    /**
      * Sets the game screen where subject will be presented with two letters.
      * @param stage The user interface stage.
      * @param subjectID The subject's ID number.
      */
-    public void setGameScreen(String subjectID, NumberGameController lgc) {
+    public void setGameScreen() {
         try {
             Scene gameScene = SetUp.setUpGameScreen(
-                    this, this.primaryStage, subjectID, lgc);  
+                    this, this.primaryStage);  
             
             this.scene = gameScene;
             this.primaryStage.setScene(this.scene);
@@ -303,5 +317,13 @@ public class GameGUI {
     public void setFinishMessage(VBox finishMessage) {
         this.finishMessage = finishMessage;
     }
+
+	public Button getNext() {
+		return next;
+	}
+
+	public void setNext(Button next) {
+		this.next = next;
+	}
 
 }
