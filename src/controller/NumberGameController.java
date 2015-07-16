@@ -77,9 +77,7 @@ public class NumberGameController implements GameController {
     
     /** Used to measure response time. */
     private static long responseTimeMetric;
-    
 
-    
     /** Current state of the game. */
     public static CurrentState state;
     
@@ -114,8 +112,7 @@ public class NumberGameController implements GameController {
         TIME_BETWEEN_ROUNDS = Config.getPropertyInt("time.between.rounds");
         SIZE_VARIATION = Config.getPropertyBoolean("size.variation");
     }
-    
-    
+      
     /**
      * Sets event listener for when subject clicks the start button OR presses Enter.
      * Pass in the subject's ID number entered.
@@ -152,6 +149,9 @@ public class NumberGameController implements GameController {
         }
     }
     
+    /** 
+     * Set event listener on the Next button and record the user's subject ID 
+     */
     public void setInstructionsHandlers() {
         this.theView.getNext().setOnAction(e -> {
             theView.setGameScreen(); 
