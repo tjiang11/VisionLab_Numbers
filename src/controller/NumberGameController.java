@@ -199,27 +199,7 @@ public class NumberGameController implements GameController {
                 if ((event.getCode() == KeyCode.F 
                         || event.getCode() == KeyCode.J) 
                         && gameState == GameState.WAITING_FOR_RESPONSE) {
-                    
-                    /** Set the state to prevent mass input from holding down
-                     * 'F' or 'J' key. */
-                    gameState = GameState.WAITING_BETWEEN_ROUNDS;
-                    
-                    /** Update models and view appropriately according to correctness
-                     * of subject's response.
-                     */
-                    gameController.responseAndUpdate(event, theView);
-                    
-                    /** Prepare the next round */
-                    gameController.prepareNextRound(); 
-                    
-                    /** Export data to CSV file in folder 'results/<subject_id>' */
-                    if (state == CurrentState.GAMEPLAY) {
-                        dataWriter.writeToCSV();    
-                    }
-                    
-                    if (state == CurrentState.PRACTICE && thePlayer.getNumRounds() >= NUM_PRACTICE_ROUNDS) {
-                        theView.setPracticeCompleteScreen();
-                    }
+                    gameController.handlePressForJ(event);
                 }
 
             }
@@ -227,27 +207,42 @@ public class NumberGameController implements GameController {
     }  
     
     /**
+     * Actions to be executed on the pressing of the F or J key.
+     * Update the models/data, prepare the next round, and export data to CSV.
+     * @param event
+     */
+    private void handlePressForJ(KeyEvent event) {
+        logger.info(state.toString());
+        this.responseAndUpdate(event, theView);
+        this.prepareNextRound(); 
+        this.exportDataToCSV();
+    }
+    
+    /** 
+     * Export data to CSV file.
+     */
+    private void exportDataToCSV() {
+        if (state == CurrentState.GAMEPLAY) {
+            dataWriter.writeToCSV();    
+        }
+    }
+    
+    /**
      * Update models and view appropriately according to correctness
      * of subject's response.  
      * @param e The key event to check which key the user pressed.
-     * @param ap The current NumberPair being evaluated.
-     * @param currentPlayer The subject.
-     * @param pb the ProgressBar to update.
+     * @param view the graphical user interface
      * @return True if the player is correct. False otherwise.
      */
     public void responseAndUpdate (
             KeyEvent e, GameGUI view) {
-        boolean correct;
-        NumberPair ap = this.currentNumberPair;
+        gameState = GameState.WAITING_BETWEEN_ROUNDS;
+        NumberPair np = this.currentNumberPair;
         Player currentPlayer = this.thePlayer;
-        URL feedbackSoundFileUrl = null;
-        
-        correct = GameLogic.checkAnswerCorrect(e, ap);
-        
+        boolean correct = GameLogic.checkAnswerCorrect(e, np);
         this.updateProgressBar(view, correct);
         this.updatePlayer(currentPlayer, correct);   
-        this.feedbackSound(feedbackSoundFileUrl, correct); 
-        
+        this.feedbackSound(correct); 
         this.dataWriter.grabData(this);
     }
     
@@ -257,6 +252,7 @@ public class NumberGameController implements GameController {
      * @param correct True if subject's reponse is correct. False otherwise.
      */
     private void updatePlayer(Player currentPlayer, boolean correct) {
+        this.recordResponseTime();
         if (correct) {
             currentPlayer.addPoint();
             currentPlayer.setRight(true);
@@ -308,7 +304,8 @@ public class NumberGameController implements GameController {
      * @param feedbackSoundFileUrl the File Url of the Sound to be played.
      * @param correct whether the subject answered correctly or not.
      */
-    private void feedbackSound(URL feedbackSoundFileUrl, boolean correct) {
+    private void feedbackSound(boolean correct) {
+    	URL feedbackSoundFileUrl;
         if (correct) {
             feedbackSoundFileUrl = 
                     getClass().getResource("/res/sounds/Ping.aiff");
@@ -349,16 +346,24 @@ public class NumberGameController implements GameController {
     }
     
     /**
-     * Prepares the next round by recording reponse time,
-     * clearing the previous round, waiting, and creating the next round.
+     * Prepares the next round by clearing the previous round, 
+     * waiting, and creating the next round.
      */
     public void prepareNextRound() {
-        recordResponseTime();
-        clearRound();
-        waitBeforeNextRoundAndUpdate(TIME_BETWEEN_ROUNDS); 
-        
-        if (thePlayer.getNumRounds() > NUM_ROUNDS) {
+        this.clearRound();
+        this.waitBeforeNextRoundAndUpdate(TIME_BETWEEN_ROUNDS); 
+        this.checkIfDone();
+    }
+    
+    /** 
+     * Check if subject has completed practice or assessment.
+     */
+    private void checkIfDone() {
+        if (thePlayer.getNumRounds() >= NUM_ROUNDS) {
             this.finishGame();
+        }
+        if (state == CurrentState.PRACTICE && thePlayer.getNumRounds() >= NUM_PRACTICE_ROUNDS) {
+            this.finishPractice();
         }
     }
     
@@ -367,9 +372,15 @@ public class NumberGameController implements GameController {
      * then change the scene to the finish screen.
      */
     private void finishGame() {
-        state = CurrentState.FINISHED;
-        System.out.println("Done");
         theView.setFinishScreen(gameController);
+    }
+    
+    /**
+     * If subject has completed the total number of rounds specified,
+     * then change the scene to the practice complete screen.
+     */
+    private void finishPractice() {
+        theView.setPracticeCompleteScreen();
     }
 
     /**
