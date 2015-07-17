@@ -357,7 +357,7 @@ public class NumberGameController implements GameController {
         clearRound();
         waitBeforeNextRoundAndUpdate(TIME_BETWEEN_ROUNDS); 
         
-        if (thePlayer.getNumRounds() >= NUM_ROUNDS) {
+        if (thePlayer.getNumRounds() > NUM_ROUNDS) {
             this.finishGame();
         }
     }
