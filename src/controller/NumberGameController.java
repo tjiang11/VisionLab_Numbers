@@ -407,27 +407,42 @@ public class NumberGameController implements GameController {
     }
 
     /**
-     * Set the next round's choices.
+     * Set and show the next round's choices.
      */
     public void setOptions() {
-        int numberOne, numberTwo;
-        
+        this.prepareNextPair();
+        this.showPair();
+    }
+    
+    /**
+     * Prepare the next pair.
+     */
+    private void prepareNextPair() {
         numberPairGenerator.getNewDifficultyPair();
         this.currentNumberPair = numberPairGenerator.getNumberPair();
-        
-        numberOne = this.currentNumberPair.getNumberOne();
-        numberTwo = this.currentNumberPair.getNumberTwo();
-        
+    }
+    
+    /**
+     * Show the pair.
+     */
+    private void showPair() {
+        int numberOne = this.currentNumberPair.getNumberOne();
+        int numberTwo = this.currentNumberPair.getNumberTwo();
         theView.getLeftOption().setText(String.valueOf(numberOne));
         theView.getRightOption().setText(String.valueOf(numberTwo));
-        
         if (SIZE_VARIATION) {
-            int numberSizeOne = this.currentNumberPair.getFontSizeOne();
-            int numberSizeTwo = this.currentNumberPair.getFontSizeTwo();
-            
-            theView.getLeftOption().setFont(new Font("Tahoma", numberSizeOne));
-            theView.getRightOption().setFont(new Font("Tahoma", numberSizeTwo));
+        	this.setFontSizes();
         }
+    }
+    
+    /**
+     * Set the font size for each choice.
+     */
+    private void setFontSizes() {
+        int numberSizeOne = this.currentNumberPair.getFontSizeOne();
+        int numberSizeTwo = this.currentNumberPair.getFontSizeTwo();
+        theView.getLeftOption().setFont(new Font("Tahoma", numberSizeOne));
+        theView.getRightOption().setFont(new Font("Tahoma", numberSizeTwo));
     }
     
     /** 
