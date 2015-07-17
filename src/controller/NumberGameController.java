@@ -85,6 +85,11 @@ public class NumberGameController implements GameController {
     /** Describes the current state of gameplay */
     private static GameState gameState;
     
+    /** How many stars the player has earned. 
+     * The player earns a star for every time the
+     * progress bar is filled. */
+    private static int numStars = 0;
+    
     private enum GameState {
         /** Player has responded and next round is loading. */
         WAITING_BETWEEN_ROUNDS,
@@ -213,7 +218,7 @@ public class NumberGameController implements GameController {
      */
     private void handlePressForJ(KeyEvent event) {
         logger.info(state.toString());
-        this.responseAndUpdate(event, theView);
+        this.responseAndUpdate(event);
         this.prepareNextRound(); 
         this.exportDataToCSV();
     }
@@ -235,14 +240,12 @@ public class NumberGameController implements GameController {
      * @return True if the player is correct. False otherwise.
      */
     public void responseAndUpdate (
-            KeyEvent e, GameGUI view) {
+            KeyEvent e) {
         gameState = GameState.WAITING_BETWEEN_ROUNDS;
         NumberPair np = this.currentNumberPair;
-        Player currentPlayer = this.thePlayer;
         boolean correct = GameLogic.checkAnswerCorrect(e, np);
-        this.updateProgressBar(view, correct);
-        this.updatePlayer(currentPlayer, correct);   
-        this.feedbackSound(correct); 
+        this.updatePlayer(correct);   
+        this.updateGUI(correct);
         this.dataWriter.grabData(this);
     }
     
@@ -251,7 +254,8 @@ public class NumberGameController implements GameController {
      * @param currentPlayer The current player.
      * @param correct True if subject's reponse is correct. False otherwise.
      */
-    private void updatePlayer(Player currentPlayer, boolean correct) {
+    private void updatePlayer(boolean correct) {
+        Player currentPlayer = this.thePlayer;
         this.recordResponseTime();
         if (correct) {
             currentPlayer.addPoint();
@@ -262,41 +266,41 @@ public class NumberGameController implements GameController {
         currentPlayer.incrementNumRounds();
     }
     
-    /**
-     * Update the progressbar. Resets to zero if progress bar is full.
-     * @param pb The view's progress bar.
+    /** 
+     * Update the progressbar, audio, stars, and background.
+     * @param correct Whether the subject answered correctly.
      */
-    private void updateProgressBar(GameGUI view, boolean correct) {
+    private void updateGUI(boolean correct) {
         if (correct) {
-            if (view.getProgressBar().isIndeterminate()) {
-                view.getProgressBar().setProgress(0.0);
-                view.getProgressBar().setStyle("-fx-accent: #0094C5;");
+            if (theView.getProgressBar().isIndeterminate()) {
+                theView.getProgressBar().setProgress(0.0);
+                theView.getProgressBar().setStyle("-fx-accent: #0094C5;");
             }
-            view.getProgressBar().setProgress(view.getProgressBar().getProgress() + .25);
-            if (view.getProgressBar().getProgress() >= 1.00) {
-                view.getProgressBar().setProgress(0.25);
+            theView.getProgressBar().setProgress(theView.getProgressBar().getProgress() + .25);
+            if (theView.getProgressBar().getProgress() >= 1.00) {
+                theView.getProgressBar().setProgress(0.25);
                 
                 URL powerUpSound = getClass().getResource("/res/sounds/Powerup.wav");
                 new AudioClip(powerUpSound.toString()).play();
                 
-                int starToReveal = this.thePlayer.getNumStars();
-                view.getStarNodes()[starToReveal].setVisible(true);
-                this.thePlayer.incrementNumStars();
+                int starToReveal = numStars;
+                theView.getStarNodes()[starToReveal].setVisible(true);
+                numStars++;
                 
-                if (this.thePlayer.getNumStars() > 2) {
-                    view.changeBackground(1);
+                if (numStars > 2) {
+                    theView.changeBackground(1);
                 }
             }
         } else {
-            view.getProgressBar().setStyle("-fx-accent: #0094C5;");
+            theView.getProgressBar().setStyle("-fx-accent: #0094C5;");
             if (PUNISH) {
-                view.getProgressBar().setProgress(view.getProgressBar().getProgress() - .125);
-                if (view.getProgressBar().isIndeterminate()) {
-                    view.getProgressBar().setStyle("-fx-accent: red;");
-                    
+                theView.getProgressBar().setProgress(theView.getProgressBar().getProgress() - .125);
+                if (theView.getProgressBar().isIndeterminate()) {
+                    theView.getProgressBar().setStyle("-fx-accent: red;");                    
                 }
             }
         }
+        this.feedbackSound(correct); 
     }
     
     /** If user inputs correct answer play positive feedback sound,
