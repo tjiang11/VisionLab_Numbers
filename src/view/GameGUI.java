@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -55,6 +56,12 @@ public class GameGUI {
     /** Instructions Screen - Next button */
     private Button next;
     
+    /** Practice Complete screen */
+    /** Label informing user has complete the practice trials. */
+    private Text practiceComplete;
+    /** Button to begin actual assessment. */
+    private Button startAssessment;
+    
     /** Game Screen - The left choice. */
     private Label leftOption;
     /** Game Screen - The right choice. */
@@ -68,7 +75,8 @@ public class GameGUI {
     private VBox getReadyBox;
     /** Game Screen - Stars */
     private ImageView starNodes[];
-
+    /** Game Screen - Practice label */
+    private Label practice;
     
     /** End Screen - message informing the user has finished. */
     private Label congratulations;
@@ -132,6 +140,20 @@ public class GameGUI {
     }
     
     /**
+     * Sets the screen whre user has finished practice trials and is about to begin assessment.
+     */
+    public void setPracticeCompleteScreen() {
+        Scene practiceCompleteScene = SetUp.setUpPracticeCompleteScreen(this);
+        this.primaryStage.setScene(practiceCompleteScene);
+        this.primaryStage.setFullScreen(true);
+        this.LGC.setPracticeCompleteHandlers();
+        this.getPracticeComplete().setLayoutY(SetUp.SCREEN_HEIGHT * .4);
+        this.getPracticeComplete().setLayoutX(SetUp.SCREEN_WIDTH / 2 - this.getPracticeComplete().getWrappingWidth() / 2);
+        this.getStartAssessment().setLayoutY(SetUp.SCREEN_HEIGHT * .6);
+        this.getStartAssessment().setLayoutX(SetUp.SCREEN_WIDTH / 2 - this.getStartAssessment().getWidth() / 2);
+    }
+    
+    /**
      * Sets the game screen where subject will be presented with two letters.
      * @param stage The user interface stage.
      * @param subjectID The subject's ID number.
@@ -149,6 +171,8 @@ public class GameGUI {
             this.getGetReadyBox().setLayoutX((SetUp.SCREEN_WIDTH / 2) - (this.getGetReadyBox().getWidth() / 2));
             
             this.getReadyBar.setLayoutX((SetUp.SCREEN_WIDTH / 2) - (this.getReady.getWidth() / 2));
+            this.getPractice().setLayoutX((SetUp.SCREEN_WIDTH / 2) - (this.practice.getWidth() / 2));
+            this.getPractice().setLayoutY(SetUp.SCREEN_HEIGHT * .1);
             
             this.primaryStage.setFullScreen(true);
             
@@ -324,6 +348,30 @@ public class GameGUI {
 
 	public void setNext(Button next) {
 		this.next = next;
+	}
+
+	public Text getPracticeComplete() {
+		return practiceComplete;
+	}
+
+	public void setPracticeComplete(Text practiceComplete) {
+		this.practiceComplete = practiceComplete;
+	}
+
+	public Button getStartAssessment() {
+		return startAssessment;
+	}
+
+	public void setStartAssessment(Button startAssessment) {
+		this.startAssessment = startAssessment;
+	}
+
+	public Label getPractice() {
+		return practice;
+	}
+
+	public void setPractice(Label practice) {
+		this.practice = practice;
 	}
 
 }

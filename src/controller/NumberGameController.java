@@ -11,6 +11,7 @@ import model.Player;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -80,6 +81,17 @@ public class NumberGameController implements GameController {
 
     /** Current state of the game. */
     public static CurrentState state;
+    
+    /** Describes the current state of gameplay */
+    private static GameState gameState;
+    
+    private enum GameState {
+        /** Player has responded and next round is loading. */
+        WAITING_BETWEEN_ROUNDS,
+        
+        /** Player has not responded and question is being displayed. */
+        WAITING_FOR_RESPONSE,
+    }
     
     /** Alternate reference to "this" to be used in inner methods */
     private NumberGameController gameController;
@@ -155,6 +167,23 @@ public class NumberGameController implements GameController {
     public void setInstructionsHandlers() {
         this.theView.getNext().setOnAction(e -> {
             theView.setGameScreen(); 
+            state = CurrentState.PRACTICE;
+        });
+    }
+    
+    /**
+     * Set handler upon clicking the "Start Assessment" button, preparing for actual assessment.
+     * Sets the game screen and the state to GAMEPLAY from PRACTICE. Removes the "Practice" Label.
+     * Resets the player's data.
+     */
+    public void setPracticeCompleteHandlers() {
+        this.theView.getStartAssessment().setOnAction( e-> {
+            theView.setGameScreen();
+            theView.getPractice().setVisible(false);
+            state = CurrentState.GAMEPLAY;
+            gameState = null;
+            SimpleIntegerProperty subjectID = new SimpleIntegerProperty(thePlayer.getSubjectID());
+            thePlayer = new Player(subjectID);
         });
     }
     
@@ -169,11 +198,11 @@ public class NumberGameController implements GameController {
             public void handle(KeyEvent event) {
                 if ((event.getCode() == KeyCode.F 
                         || event.getCode() == KeyCode.J) 
-                        && state == CurrentState.WAITING_FOR_RESPONSE) {
+                        && gameState == GameState.WAITING_FOR_RESPONSE) {
                     
                     /** Set the state to prevent mass input from holding down
                      * 'F' or 'J' key. */
-                    state = CurrentState.WAITING_BETWEEN_ROUNDS;
+                    gameState = GameState.WAITING_BETWEEN_ROUNDS;
                     
                     /** Update models and view appropriately according to correctness
                      * of subject's response.
@@ -184,7 +213,13 @@ public class NumberGameController implements GameController {
                     gameController.prepareNextRound(); 
                     
                     /** Export data to CSV file in folder 'results/<subject_id>' */
-                    dataWriter.writeToCSV();  
+                    if (state == CurrentState.GAMEPLAY) {
+                        dataWriter.writeToCSV();    
+                    }
+                    
+                    if (state == CurrentState.PRACTICE && thePlayer.getNumRounds() >= NUM_PRACTICE_ROUNDS) {
+                        theView.setPracticeCompleteScreen();
+                    }
                 }
 
             }
@@ -305,7 +340,7 @@ public class NumberGameController implements GameController {
             @Override
             public void handle(WorkerStateEvent e) {
                 setOptions();
-                state = CurrentState.WAITING_FOR_RESPONSE;
+                gameState = GameState.WAITING_FOR_RESPONSE;
                 responseTimeMetric = System.nanoTime();
                 theView.getGetReadyBox().setVisible(false);
             }
@@ -364,7 +399,7 @@ public class NumberGameController implements GameController {
             @Override
             public void handle(WorkerStateEvent e) {
                 setOptions();
-                state = CurrentState.WAITING_FOR_RESPONSE;
+                gameState = GameState.WAITING_FOR_RESPONSE;
                 responseTimeMetric = System.nanoTime();
             }
         });

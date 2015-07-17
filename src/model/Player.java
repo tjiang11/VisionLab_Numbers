@@ -40,6 +40,11 @@ public class Player {
         this.setResponseTime(0);
         this.setNumStars(0);
     }
+    
+    public Player(IntegerProperty subjectID) {
+        this();
+        this.subjectID = subjectID;
+    }
 
     public double getRT() {
         return this.responseTime;
