@@ -25,7 +25,7 @@ public class NumberPairGenerator {
     static int MAX_TIMES_SAME_ANSWER = 3;
     
     /** Number of times the same relative size (bigger or smaller) can be correct */
-    static final int MAX_TIMES_SAME_SIZE_CORRECT = 1;
+    static final int MAX_TIMES_SAME_SIZE_CORRECT = 3;
     
     /** Number of intacters to choose from. */
     static final int NUM_NUMBERS = 26;
