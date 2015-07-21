@@ -479,8 +479,7 @@ public class NumberGameController implements GameController {
     public void recordResponseTime() {
         long responseTime = System.nanoTime() - responseTimeMetric;
         thePlayer.setResponseTime(responseTime);
-        
-        //Convert from nanoseconds to seconds.
+
         double responseTimeSec = responseTime / 1000000000.0;
 
         logger.info("Your response time was: " 
