@@ -133,6 +133,7 @@ public class GameGUI {
      */
     public void setInstructionsScreen() {
         Scene instructionsScene = SetUp.setUpInstructionsScreen(this, this.primaryStage);
+    	this.scene = instructionsScene;
         this.primaryStage.setScene(instructionsScene);
         this.primaryStage.setFullScreen(true);
         this.getNext().setLayoutX(getNext().getLayoutX() - this.getNext().getWidth() / 2);
