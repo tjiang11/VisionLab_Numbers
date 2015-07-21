@@ -147,9 +147,7 @@ public class NumberPairGenerator {
         }
         
         if (randomGenerator.nextBoolean()) {
-            int temp = baseFontSize;
-            baseFontSize = otherFontSize;
-            otherFontSize = temp;
+            baseFontSize = swap(otherFontSize, otherFontSize = baseFontSize);
         }
         
         this.getNewPair(difference, baseFontSize, otherFontSize);
@@ -183,9 +181,7 @@ public class NumberPairGenerator {
         numberTwo = numberOne + difference;
         
         if (randomGenerator.nextBoolean()) {
-            int temp = numberTwo;
-            numberTwo = numberOne;
-            numberOne = temp;
+            numberOne = swap(numberTwo, numberTwo = numberOne);
         }
         this.checkAndSet(numberOne, numberTwo, fontSizeOne, fontSizeTwo);
     }
@@ -197,15 +193,12 @@ public class NumberPairGenerator {
      * @param numberTwo
      */
     private void checkAndSet(int numberOne, int numberTwo, int fontSizeOne, int fontSizeTwo) {
-        this.checkSameChoice(numberOne, numberTwo);
-
-        this.checkSameSize(numberOne, numberTwo, fontSizeOne, fontSizeTwo);
+        if (this.performChecks(numberOne, numberTwo, fontSizeOne, fontSizeTwo)) {
+            return;
+        }
         
         if (this.getSameSizeCorrect() >= MAX_TIMES_SAME_SIZE_CORRECT) {
-            int temp = fontSizeOne;
-            fontSizeOne = fontSizeTwo;
-            fontSizeTwo = temp;
-            
+        	fontSizeOne = swap(fontSizeTwo, fontSizeTwo = fontSizeOne);     
             this.setSameSizeCorrect(0);
             this.toggleLastWasBig();
         }
@@ -218,6 +211,61 @@ public class NumberPairGenerator {
     }
     
     /**
+     * Perform checks.
+     * @param numberOne
+     * @param numberTwo
+     * @param fontSizeOne
+     * @param fontSizeTwo
+     * @return true if this pair should NOT be set.
+     */
+    private boolean performChecks(int numberOne, int numberTwo, int fontSizeOne, int fontSizeTwo) {
+        if (this.checkSamePair(numberOne, numberTwo, fontSizeOne, fontSizeTwo)) {
+            return true;
+        }
+        this.checkSameChoice(numberOne, numberTwo);
+        this.checkSameSize(numberOne, numberTwo, fontSizeOne, fontSizeTwo);
+        return false;
+    }
+    
+    /**
+     * Check if this pair is the same as the last
+     * @param numberOne
+     * @param numberTwo
+     * @param fontSizeOne
+     * @param fontSizeTwo
+     * @return true if this pair is the same as the last
+     */
+    private boolean checkSamePair(int numberOne, int numberTwo, int fontSizeOne, int fontSizeTwo) {
+        if (this.isSamePair(numberOne, numberTwo)) {
+            logger.info("isSamePair TRUE");
+            int difference = Math.abs(numberOne - numberTwo);
+            this.getNewPair(difference, fontSizeOne, fontSizeTwo);
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Tests if the content of the current pair is the same as the last pair.
+     * @param numberOne first element of the current pair.
+     * @param numberTwo second element of the current pair.
+     * @return true if same as last pair.
+     */
+    private boolean isSamePair(int numberOne, int numberTwo) {
+        if (this.numberPair == null) {
+            return false;
+        }      
+        
+        if (this.numberPair.getNumberOne() == numberOne
+                && this.numberPair.getNumberTwo() == numberTwo) {
+            System.out.println("TRUE");
+            return true;
+
+        }
+        return false;
+	}
+
+	/**
      * Occurs under the condition that the same side has been correct
      * for MAX_TIMES_SAME_ANSWER times in a row.
      * 
@@ -302,6 +350,16 @@ public class NumberPairGenerator {
         } else {
             this.lastWasBig = true;
         }
+    }
+    
+    /** 
+     * Swap values of x and y.
+     * 
+     * @param x
+     * @param y This parameter should be an assignment.
+     */
+    private int swap(int x, int y) {
+        return x;
     }
     
     public void increaseDifficulty() {
