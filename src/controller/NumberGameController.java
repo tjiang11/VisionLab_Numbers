@@ -404,7 +404,8 @@ public class NumberGameController implements GameController {
      * then change the scene to the finish screen.
      */
     private void finishGame() {
-        theView.setFinishScreen(thePlayer.getNumCorrect());
+        theView.setFinishScreen(thePlayer.getNumCorrect(), backgroundNumber);
+        theView.getScene().setOnKeyPressed(null);
     }
     
     /**
