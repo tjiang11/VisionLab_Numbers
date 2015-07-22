@@ -77,7 +77,7 @@ public final class SetUp {
      * @param primaryStage The stage.
      * @return The login scene.
      */
-    public static void setUpLoginScreen(GameGUI view, Stage primaryStage) {
+    public static void setUpLoginScreen(GameGUI view) {
         Label label = new Label("Enter your Subject ID");
         view.setStart(new Button("Start"));
         view.setEnterId(new TextField());
@@ -100,12 +100,12 @@ public final class SetUp {
      * @param primaryStage stage
      * @return Scene the instructions scene
      */
-    public static void setUpInstructionsScreen(GameGUI view, Stage primaryStage) {
+    public static void setUpInstructionsScreen(GameGUI view) {
         Text instructionsText = new Text();
-        instructionsText.setText("In this assessment, for each question you will be shown a pair of letters. "
-                + "Decide which letter comes later in the alphabet. "
-                + "Press the 'F' key if you think the left letter comes later, "
-                + "and press the 'J' key if you think the right letter comes later. "
+        instructionsText.setText("In this assessment, for each question you will be shown pairs of numbers. "
+                + "Decide which number is greater. "
+                + "Press the 'F' key if you think the left number is greater, "
+                + "and press the 'J' key if you think the right number is greater. "
                 + "There is no time limit. Click Next to try a practice question.");
         instructionsText.setFont(new Font("Century Gothic", 55));
         instructionsText.setLayoutX(SCREEN_WIDTH * .1);
