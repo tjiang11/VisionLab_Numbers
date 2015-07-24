@@ -8,9 +8,6 @@ import model.NumberPair;
 import model.NumberPairGenerator;
 import model.GameLogic;
 import model.Player;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -20,7 +17,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.media.AudioClip;
 import javafx.scene.text.Font;
-import javafx.util.Duration;
 import view.GameGUI;
 
 /**
@@ -327,7 +323,7 @@ public class NumberGameController implements GameController {
                 theView.getProgressBar().setProgress(0.0);
                 theView.getProgressBar().setStyle("-fx-accent: #0094C5;");
             }
-            theView.getProgressBar().setProgress(theView.getProgressBar().getProgress() + .25);
+            theView.getProgressBar().setProgress(theView.getProgressBar().getProgress() + .1666667);
             if (theView.getProgressBar().getProgress() >= 1.00) {
                 theView.getProgressBar().setProgress(0.25);
                 
