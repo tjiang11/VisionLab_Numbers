@@ -5,7 +5,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
@@ -46,7 +48,19 @@ public class GameGUI {
     private Label feedback;
     /** Login Screen - Text field for user to enter their 
      * Subject ID. */
-    private TextField enterId;
+    private TextField enterId;   
+    /** Login Screen - Toggle group for gender */
+    private ToggleGroup pickGender;
+    /** Login Screen - Radio Button "Male" */
+    private RadioButton pickMale;
+    /** Login Screen - Radio Button "Female" */
+    private RadioButton pickFemale; 
+    /** Login Screen - Text field for user to enter age. */ 
+    private TextField enterAge;
+    /** Login Screen - feedback to tell if user needs to correctly input their gender. */
+    private Label feedbackGender;
+    /** Login Screen - feedback to tell if user needs to correctly input their age. */
+    private Label feedbackAge;
     /** Login Box to contain start button, feedback label, and enterId TextField. */
     private VBox loginBox;
     
@@ -313,4 +327,52 @@ public class GameGUI {
     public void setStartAssessment(Button startAssessment) {
         this.startAssessment = startAssessment;
     }
+
+	public ToggleGroup getPickGender() {
+		return pickGender;
+	}
+
+	public void setPickGender(ToggleGroup pickGender) {
+		this.pickGender = pickGender;
+	}
+
+	public RadioButton getPickMale() {
+		return pickMale;
+	}
+
+	public void setPickMale(RadioButton pickMale) {
+		this.pickMale = pickMale;
+	}
+
+	public RadioButton getPickFemale() {
+		return pickFemale;
+	}
+
+	public void setPickFemale(RadioButton pickFemale) {
+		this.pickFemale = pickFemale;
+	}
+
+	public TextField getEnterAge() {
+		return enterAge;
+	}
+
+	public void setEnterAge(TextField enterAge) {
+		this.enterAge = enterAge;
+	}
+
+	public Label getFeedbackGender() {
+		return feedbackGender;
+	}
+
+	public void setFeedbackGender(Label feedbackGender) {
+		this.feedbackGender = feedbackGender;
+	}
+
+	public Label getFeedbackAge() {
+		return feedbackAge;
+	}
+
+	public void setFeedbackAge(Label feedbackAge) {
+		this.feedbackAge = feedbackAge;
+	}
 }
