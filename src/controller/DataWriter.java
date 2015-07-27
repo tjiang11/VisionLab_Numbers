@@ -39,8 +39,10 @@ public class DataWriter {
     public static final String DISTANCE = "Distance";
     public static final String LEFT_CHOICE_SIZE = "Left Choice Size";
     public static final String RIGHT_CHOICE_SIZE = "Right Choice Size";
+    public static final String FONT_RATIO = "Font Ratio (Greater to smaller)";
     public static final String WHICH_SIZE_CORRECT = "Which Size Correct";
     public static final String WHICH_SIZE_PICKED = "Which Size Picked";
+    public static final String NUMERICAL_RATIO = "Numerical Ratio (Greater to smaller)";
     public static final String RESPONSE_TIME = "Response Time";
     public static final String DATE_TIME = "Date/Time";
     public static final String CONSECUTIVE_ROUND = "Consecutive Rounds";
@@ -135,8 +137,10 @@ public class DataWriter {
                 + DISTANCE + DELIMITER
                 + LEFT_CHOICE_SIZE + DELIMITER
                 + RIGHT_CHOICE_SIZE + DELIMITER
+                + FONT_RATIO + DELIMITER
                 + WHICH_SIZE_CORRECT + DELIMITER
                 + WHICH_SIZE_PICKED + DELIMITER
+                + NUMERICAL_RATIO + DELIMITER
                 + RESPONSE_TIME + DELIMITER
                 + DATE_TIME + DELIMITER
                 + CONSECUTIVE_ROUND + "\n";
@@ -160,8 +164,10 @@ public class DataWriter {
         String distance = this.generateDistanceText();
         String leftChoiceSize = this.generateLeftChoiceSizeText();
         String rightChoiceSize = this.generateRightChoiceSizeText();
+        String fontRatio = this.generateFontRatioText();
         String whichSizeCorrect = this.generateSizeCorrectText(whichSideCorrect);
         String whichSizePicked = this.generateSizePickedText(whichSizeCorrect);
+        String numericalRatio = this.generateNumericalRatioText();
         String responseTime = this.generateResponseTimeText();
         String dateTime = this.generateDateTimeText();
         String consecutiveRounds = this.generateConsecutiveRoundsText();
@@ -178,8 +184,10 @@ public class DataWriter {
                 + distance + DELIMITER
                 + leftChoiceSize + DELIMITER
                 + rightChoiceSize + DELIMITER
+                + fontRatio + DELIMITER
                 + whichSizeCorrect + DELIMITER
                 + whichSizePicked + DELIMITER
+                + numericalRatio + DELIMITER
                 + responseTime + DELIMITER
                 + dateTime + DELIMITER
                 + consecutiveRounds + "\n";
@@ -272,6 +280,14 @@ public class DataWriter {
                 this.numberPair.getFontSizeTwo());
     }
     
+    private String generateFontRatioText() {
+        double ratio = (double) this.numberPair.getFontSizeOne() / this.numberPair.getFontSizeTwo();
+        if (ratio < 1) {
+            ratio = 1 / ratio;
+        }
+        return Double.toString(ratio);
+    }
+    
     private String generateSizeCorrectText(String whichSideCorrect) {
         if (whichSideCorrect.equals("left") && (this.numberPair.getFontSizeOne() > this.numberPair.getFontSizeTwo())
                 || whichSideCorrect.equals("right") && (this.numberPair.getFontSizeTwo() > this.numberPair.getFontSizeOne())) {
@@ -288,6 +304,14 @@ public class DataWriter {
         } else {
             return "Smaller";
         }
+    }
+    
+    private String generateNumericalRatioText() {
+    	double ratio = (double) this.numberPair.getNumberOne() / this.numberPair.getNumberTwo();
+    	if (ratio < 1) {
+    		ratio = 1 / ratio;
+    	}
+    	return Double.toString(ratio);
     }
     
     private String generateResponseTimeText() {

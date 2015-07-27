@@ -45,7 +45,7 @@ import javafx.stage.Screen;
 public final class SetUp {
     
     /** Background */
-    static final String BACKGROUNDS[] = {"23", "14", "21", "22", "17", "25"};
+    static final String BACKGROUNDS[] = {"8", "9", "10", "11", "18", "15"};
 
     /** Width and height of the computer's screen */
     static final Rectangle2D primaryScreenBounds = Screen.getPrimary().getBounds();
