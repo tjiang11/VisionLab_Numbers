@@ -168,6 +168,13 @@ public class GameGUI {
         this.scene.setRoot(this.layout);
     }
     
+    /**
+     * Change font colors.
+     */
+    public void changeFontColors(int level) {
+        SetUp.setFontColors(this, level);
+    }
+    
     public Scene getScene() {
         return this.scene;
     }

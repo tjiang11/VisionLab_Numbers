@@ -48,6 +48,9 @@ public final class SetUp {
     /** Background */
     static final String BACKGROUNDS[] = {"8", "9", "10", "11", "18", "15"};
 
+    /** Color of font on each background */
+    static final Color FONT_COLORS[] = {Color.BLACK, Color.BLUE, Color.GREEN, Color.MAGENTA, Color.CORAL, Color.BLUEVIOLET};
+    
     /** Width and height of the computer's screen */
     static final Rectangle2D primaryScreenBounds = Screen.getPrimary().getBounds();
     static final double SCREEN_WIDTH = primaryScreenBounds.getWidth();
@@ -287,6 +290,8 @@ public final class SetUp {
 
         view.getLeftOption().setAlignment(Pos.CENTER);
         view.getRightOption().setAlignment(Pos.CENTER);
+        view.getLeftOption().setTextFill(FONT_COLORS[0]);
+        view.getRightOption().setTextFill(FONT_COLORS[0]);
     }
 
     /**
@@ -335,5 +340,14 @@ public final class SetUp {
                 BackgroundPosition.CENTER,
                 BackgroundSize.DEFAULT);
         layout.setBackground(new Background(bg));
+    }
+    
+    public static void setFontColors(GameGUI view, int level) {
+        if (level >= FONT_COLORS.length) {
+            level = FONT_COLORS.length - 1;
+        }
+        Color color = FONT_COLORS[level];
+        view.getLeftOption().setTextFill(color);
+        view.getRightOption().setTextFill(color);
     }
 }
