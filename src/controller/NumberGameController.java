@@ -456,6 +456,7 @@ public class NumberGameController implements GameController {
      */
     private void finishPractice() {
         theView.setPracticeCompleteScreen();
+        this.theScene.setOnKeyPressed(null);
         numStars = 0;
         backgroundNumber = 0;
     }
