@@ -50,7 +50,7 @@ public final class SetUp {
     static final String BACKGROUNDS[] = {"8", "9", "10", "11", "18", "15"};
 
     /** Color of font on each background */
-    static final Color FONT_COLORS[] = {Color.BLACK, Color.BLUE, Color.GREEN, Color.MAGENTA, Color.CORAL, Color.BLUEVIOLET};
+    static final Color FONT_COLORS[] = {Color.BLACK, Color.BLUE, Color.RED, Color.CORNFLOWERBLUE, Color.CORAL, Color.BLUEVIOLET};
     
     /** Width and height of the computer's screen */
     static final Rectangle2D primaryScreenBounds = Screen.getPrimary().getBounds();
@@ -275,8 +275,10 @@ public final class SetUp {
     public static void initialOptionSetUp(GameGUI view) {
         view.getLeftOption().setFont(new Font("Tahoma", INITIAL_LETTER_SIZE));
         view.getRightOption().setFont(new Font("Tahoma", INITIAL_LETTER_SIZE));
-        view.getLeftOption().setStyle("-fx-background-color: transparent;");
-        view.getRightOption().setStyle("-fx-background-color: transparent;");
+        view.getLeftOption().setStyle("-fx-background-color: rgba(255,255,255,.65);");
+        view.getRightOption().setStyle("-fx-background-color: rgba(255,255,255,.65);");
+        view.getLeftOption().setVisible(false);
+        view.getRightOption().setVisible(false);
         view.getLeftOption().setMinWidth(SCREEN_WIDTH / 2);
         view.getLeftOption().setMaxWidth(SCREEN_WIDTH / 2);
         view.getLeftOption().setMaxHeight(SCREEN_HEIGHT * .75);
@@ -368,7 +370,7 @@ public final class SetUp {
                 + "-fx-border-width: 3px;");
         quitBox.setPadding(new Insets(30, 30, 30, 30));
         quitBox.setAlignment(Pos.CENTER);
-        Label quitLabel = new Label("Quit Assessment?");
+        Label quitLabel = new Label(Strings.QUIT_MESSAGE_SP);
         quitLabel.setFont(new Font("Tahoma", 20));
         Button yesButton = new Button(Strings.YES_SP);
         yesButton.setOnAction(e -> {

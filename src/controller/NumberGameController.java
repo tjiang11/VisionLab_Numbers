@@ -403,7 +403,6 @@ public class NumberGameController implements GameController {
      * let the subject prepare for the first question.
      */
     public void prepareFirstRound() {
-        
         Task<Void> sleeper = new Task<Void>() {   
             @Override
             protected Void call() throws Exception {
@@ -422,6 +421,8 @@ public class NumberGameController implements GameController {
                 gameState = GameState.WAITING_FOR_RESPONSE;
                 responseTimeMetric = System.nanoTime();
                 theView.getGetReadyBox().setVisible(false);
+                theView.getLeftOption().toBack();
+                theView.getRightOption().toBack();
             }
         });
         new Thread(sleeper).start();
@@ -476,7 +477,9 @@ public class NumberGameController implements GameController {
      */
     public void clearRound() {
         getTheView().getLeftOption().setText("");
+        getTheView().getLeftOption().setVisible(false);
         getTheView().getRightOption().setText("");
+        getTheView().getRightOption().setVisible(false);
     }
 
     /**
@@ -527,7 +530,9 @@ public class NumberGameController implements GameController {
         int numberOne = this.currentNumberPair.getNumberOne();
         int numberTwo = this.currentNumberPair.getNumberTwo();
         theView.getLeftOption().setText(String.valueOf(numberOne));
+        theView.getLeftOption().setVisible(true);
         theView.getRightOption().setText(String.valueOf(numberTwo));
+        theView.getRightOption().setVisible(true);
         if (SIZE_VARIATION) {
         	this.setFontSizes();
         }
